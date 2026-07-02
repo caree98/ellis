@@ -23,7 +23,7 @@
 
   /* Mission statement big-quote */
   .mission-quote{
-    padding:80px 32px;background:var(--paper);
+    padding:80px 32px;background:var(--uv-soft);
     border-bottom:1px solid var(--line);text-align:center;
   }
   .mission-quote-inner{max-width:780px;margin:0 auto;}
@@ -66,13 +66,6 @@
   .proj-body p{
     font-size:14px;line-height:1.55;color:var(--ink-soft);margin:0 0 8px;
   }
-  .proj-tag-row{margin-top:8px;}
-  .proj-tag{
-    display:inline-block;font-family:'IBM Plex Mono', monospace;
-    font-size:10px;letter-spacing:0.06em;text-transform:uppercase;
-    padding:2px 6px;border:1px solid var(--line);color:var(--ink-soft);
-    margin-right:6px;
-  }
 </style>
 </head>
 <body>
@@ -87,10 +80,6 @@
   </a>
   <div class="nav-right">
     <ul class="nav-links">
-      <li><a href="tools.html">Tools</a></li>
-      <li><a href="learn.html">Learn</a></li>
-      <li><a href="map.html">Map</a></li>
-      <li><a href="timeline.html">Timeline</a></li>
       <li class="has-dropdown">
         <a href="about-mission.html" class="nav-trigger">About</a>
         <div class="dropdown-panel" role="menu">
@@ -98,10 +87,29 @@
           <a href="about-team.html">Team</a>
         </div>
       </li>
+      <li class="has-dropdown">
+        <a href="learn.html" class="nav-trigger">Learn</a>
+        <div class="dropdown-panel" role="menu">
+          <a href="learn.html">Overview</a>
+          <a href="learn-foundations.html">Foundations</a>
+          <a href="learn-filtration-ventilation.html">Filtration &amp; Ventilation</a>
+          <a href="learn-germicidal-uv.html">Germicidal UV</a>
+          <a href="learn-monitoring.html">Monitoring</a>
+          <a href="learn-readiness.html">Readiness</a>
+        </div>
+      </li>
+      <li class="has-dropdown">
+        <a href="tools.html" class="nav-trigger">Tools</a>
+        <div class="dropdown-panel" role="menu">
+          <a href="building-scorecard.html">Building Scorecard</a>
+          <a href="guv-deployment-engine.html">GUV Deployment Engine</a>
+          <a href="map.html">Surveillance Map</a>
+        </div>
+      </li>
       <li><a href="shepherd.html">Shepherd</a></li>
-      <li><a href="act.html">Act</a></li>
+      <li><a href="contact.html">Contact</a></li>
     </ul>
-    <a href="building-scorecard.html" class="nav-cta">Score your space</a>
+
   </div>
 </nav>
 
@@ -120,16 +128,17 @@
   <section class="mission-section">
     <h2>What we believe</h2>
     <div class="prose">
-      <p>Indoor air is the variable we can control most. We can't control who walks into a room, what variant is circulating, or what the weather does to transmission &mdash; but we can control the air handling, filtration, and germicidal UV in the spaces where people gather.</p>
+      <p>Indoor air is the variable we can control most. We can't control who walks into a room, what diseases circulate, or how the weather can contribute to disease transmission. However, we can control air handling, filtration, and germicidal UV in the spaces where people gather.</p>
+      <p>It shouldn't take a six-figure budget or salary to start acting today on our built environments. The Surveillance Map reads public health data making statistical, urgent data transparent for all audiences; the GUV Development Engine sizes all-room UV deployment; and the Building Scorecard asks 12 questions to help people in consultation and navigation mapping out their next steps.</p>
       <p>That work used to require an industrial hygienist and a six-figure budget. We think it shouldn't. The Building Scorecard takes 12 questions; the Surveillance Map reads public health data; the GUV engine sizes an upper-room UV deployment. Each tool is something a school nurse, a facilities manager, or a parent with a clipboard can actually run.</p>
-      <p>We don't sell equipment. We don't run ads. We cite primary sources and trace every claim back to ASHRAE, the CDC, or the WHO. If a recommendation requires an engineer on site, we say so. If a recommendation is a $90 box fan and a MERV-13 filter, we say that too.</p>
+      <p>We don't sell equipment or services, and our goal is to be an unbias, transparent source for information and tools to act today on the health of your indoor space. We cite primary sources and trace every claim back to ASHRAE, the CDC, or the WHO.</p>
     </div>
   </section>
 
   <div class="mission-quote">
     <div class="mission-quote-inner">
-      <p class="mission-quote-text">Clean air is a decision, not an accident.</p>
-      <p class="mission-quote-attr">&mdash; Ellis</p>
+      <p class="mission-quote-text">The cost of our inaction is vastly greater than the cost of our timely action.</p>
+      <p class="mission-quote-attr">&mdash; Dr. Gro Brundtland, former Director-General of the World Health Organization</p>
     </div>
   </div>
 
@@ -144,73 +153,6 @@
         <div class="proj-body">
           <h3>Surveillance Map &mdash; first pilot renditions</h3>
           <p>Initial design and data-shape work for the Surveillance Map tool. Prototype rendered against CDC NNDSS placeholder data, with WHO/UKHSA/ECDC coverage scoped for v2. Ongoing iteration on choropleth rendering, disease toggles, and source credibility.</p>
-          <div class="proj-tag-row">
-            <span class="proj-tag">webgl</span>
-            <span class="proj-tag">d3</span>
-            <span class="proj-tag">public-health</span>
-            <span class="proj-tag">ongoing</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="proj-entry">
-        <div class="proj-when">
-          Feb &ndash; Apr 2025
-          <span class="proj-status planned">prototype</span>
-        </div>
-        <div class="proj-body">
-          <h3>Building Scorecard &mdash; research and schema</h3>
-          <p>Twelve-question self-assessment tool. Drafted against ASHRAE 62.1, 52.2, and CDC ventilation guidance. Tested wording with facilities managers, school nurses, and small-office operators.</p>
-          <div class="proj-tag-row">
-            <span class="proj-tag">research</span>
-            <span class="proj-tag">scoring</span>
-            <span class="proj-tag">ashrae</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="proj-entry">
-        <div class="proj-when">
-          Jun 2025
-          <span class="proj-status planned">shipped</span>
-        </div>
-        <div class="proj-body">
-          <h3>Shepherd &mdash; weekly dispatch launch</h3>
-          <p>The first public-facing Ellis surface. One finding, one thing to do with it, every Friday. Pilot run showed strong engagement from facilities staff and educators.</p>
-          <div class="proj-tag-row">
-            <span class="proj-tag">editorial</span>
-            <span class="proj-tag">research</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="proj-entry">
-        <div class="proj-when">
-          Aug 2025
-          <span class="proj-status planned">shipped</span>
-        </div>
-        <div class="proj-body">
-          <h3>Biodefense Timeline &mdash; public release</h3>
-          <p>34 events from the Plague of Justinian to ongoing outbreaks in 2026. Every event sourced to a primary institution (WHO, CDC, ECDC, UKHSA, EPA, NIH, National Academies). Filterable by tag, pannable, with each event pinned to a credible source.</p>
-          <div class="proj-tag-row">
-            <span class="proj-tag">history</span>
-            <span class="proj-tag">interactive</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="proj-entry">
-        <div class="proj-when">
-          Oct 2025
-          <span class="proj-status planned">shipped</span>
-        </div>
-        <div class="proj-body">
-          <h3>Building Scorecard &mdash; v1 release</h3>
-          <p>First public version. 12 questions across five categories (ventilation, filtration, GUV, monitoring, readiness). Each answer weighted by ASHRAE / CDC guidance. Outputs a per-category score and a prioritized fix list.</p>
-          <div class="proj-tag-row">
-            <span class="proj-tag">scoring</span>
-            <span class="proj-tag">tools</span>
-          </div>
         </div>
       </div>
 
@@ -222,42 +164,61 @@
         <div class="proj-body">
           <h3>GUV deployment engine</h3>
           <p>Upper-room germicidal UV sizing tool. Takes room dimensions, target equivalent ACH, and ceiling height &mdash; returns fixture count, placement, and cost estimate based on ASHRAE 185.1. Currently in early prototype, targeting pilot release Q3 2026.</p>
-          <div class="proj-tag-row">
-            <span class="proj-tag">engineering</span>
-            <span class="proj-tag">uvgi</span>
-            <span class="proj-tag">ashrae</span>
-            <span class="proj-tag">in progress</span>
-          </div>
         </div>
       </div>
 
       <div class="proj-entry">
         <div class="proj-when">
-          Q3 2026
+          Q4 2026
+          <span class="proj-status planned">planned</span>
+        </div>
+        <div class="proj-body">
+          <h3>Building Scorecard &mdash; research and schema</h3>
+          <p>Twelve-question self-assessment tool. Drafted against ASHRAE 62.1, 52.2, and CDC ventilation guidance. Tested wording with facilities managers, school nurses, and small-office operators.</p>
+        </div>
+      </div>
+
+      <div class="proj-entry">
+        <div class="proj-when">
+          Q4 2026
+          <span class="proj-status planned">planned</span>
+        </div>
+        <div class="proj-body">
+          <h3>Shepherd &mdash; weekly dispatch launch</h3>
+          <p>The first public-facing Ellis surface. One finding, one thing to do with it, every Friday. Pilot run showed strong engagement from facilities staff and educators.</p>
+        </div>
+      </div>
+
+      <div class="proj-entry">
+        <div class="proj-when">
+          Q4 2026
+          <span class="proj-status planned">planned</span>
+        </div>
+        <div class="proj-body">
+          <h3>Biodefense Timeline &mdash; public release</h3>
+          <p>34 events from the Plague of Justinian to ongoing outbreaks in 2026. Every event sourced to a primary institution (WHO, CDC, ECDC, UKHSA, EPA, NIH, National Academies). Filterable by tag, pannable, with each event pinned to a credible source.</p>
+        </div>
+      </div>
+
+      <div class="proj-entry">
+        <div class="proj-when">
+          Q4 2026
           <span class="proj-status planned">planned</span>
         </div>
         <div class="proj-body">
           <h3>Letter generator</h3>
           <p>Auto-drafts a request letter to a school district or employer citing specific ASHRAE / CDC upgrades. Pulls the relevant scorecard data and produces a citation-backed document ready to send.</p>
-          <div class="proj-tag-row">
-            <span class="proj-tag">tools</span>
-            <span class="proj-tag">organizing</span>
-          </div>
         </div>
       </div>
 
       <div class="proj-entry">
         <div class="proj-when">
           Ongoing
-          <span class="proj-status ongoing">always</span>
+          <span class="proj-status ongoing">ongoing</span>
         </div>
         <div class="proj-body">
           <h3>Sourcing &amp; updating</h3>
           <p>Every claim on Ellis is traceable to a primary source. We audit the timeline, map, and scorecard quarterly against the latest WHO, CDC, ECDC, and UKHSA guidance. If something changes upstream, we update.</p>
-          <div class="proj-tag-row">
-            <span class="proj-tag">maintenance</span>
-            <span class="proj-tag">citable</span>
-          </div>
         </div>
       </div>
     </div>
@@ -292,9 +253,9 @@
       <div class="footer-col">
         <h4>Tools</h4>
         <ul>
-          <li><a href="building-scorecard.html">Scorecard</a></li>
-          <li><a href="guv-deployment-engine.html">GUV engine</a></li>
-          <li><a href="map.html">Surveillance map</a></li>
+          <li><a href="building-scorecard.html">Building Scorecard</a></li>
+          <li><a href="guv-deployment-engine.html">GUV Deployment Engine</a></li>
+          <li><a href="map.html">Surveillance Map</a></li>
           <li><a href="#">Letter generator</a></li>
         </ul>
       </div>
@@ -302,9 +263,12 @@
         <h4>Learn</h4>
         <ul>
           <li><a href="learn.html">Overview</a></li>
-          <li><a href="#">IAQ 101</a></li>
-          <li><a href="#">The timeline</a></li>
-          <li><a href="#">Research library</a></li>
+          <li><a href="learn-foundations.html">Foundations</a></li>
+          <li><a href="learn-filtration-ventilation.html">Filtration &amp; Ventilation</a></li>
+          <li><a href="learn-germicidal-uv.html">Germicidal UV</a></li>
+          <li><a href="learn-monitoring.html">Monitoring</a></li>
+          <li><a href="learn-readiness.html">Readiness</a></li>
+          <li><a href="timeline.html">The timeline</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -312,6 +276,7 @@
         <ul>
           <li><a href="#">About &amp; sourcing</a></li>
           <li><a href="shepherd.html">Shepherd</a></li>
+          <li><a href="contact.html">Contact</a></li>
           <li><a href="#">Partner with us</a></li>
           <li><a href="#">Donate</a></li>
         </ul>

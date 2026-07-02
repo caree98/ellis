@@ -3,15 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Surveillance map — Ellis</title>
-<meta name="description" content="Weekly-updated respiratory illness and notifiable disease signal — US states (NNDSS) and global (WHO, ECDC, UKHSA).">
+<title>Surveillance Map — Ellis</title>
+<meta name="description" content="Real-time respiratory illness signals from CDC NSSP — ED visit % for COVID-19, Flu, RSV by state. Global news from WHO.">
 <link rel="icon" type="image/png" href="assets/flag-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/site.css">
 <style>
-  /* Map page-specific (shared tokens still drive everything) */
+  header{
+    border-bottom:1px solid var(--line);padding:28px 32px;display:flex;
+    align-items:baseline;justify-content:space-between;gap:24px;flex-wrap:wrap;
+    position:sticky;top:0;background:var(--paper);z-index:50;
+  }
+  .brand{display:flex;align-items:baseline;gap:12px;}
+  .brand .mark{
+    font-family:'Source Serif 4', serif;font-weight:600;
+    font-size:22px;letter-spacing:-0.01em;color:var(--ink);
+  }
+  .brand .sub{
+    font-size:12px;letter-spacing:0.08em;text-transform:uppercase;
+    color:var(--ink-soft);font-family:'IBM Plex Mono', monospace;
+  }
+  .header-tag{
+    font-size:12px;color:var(--ink-soft);font-family:'IBM Plex Mono', monospace;
+    letter-spacing:0.02em;max-width:340px;text-align:right;
+  }
+
   .map-controls{
     display:flex;flex-wrap:wrap;gap:14px;align-items:end;
     padding:24px 32px;border-bottom:1px solid var(--line);background:var(--white);
@@ -33,6 +51,26 @@
   .seg button.on{background:var(--ink);color:var(--paper);}
   .seg button:hover:not(.on){background:var(--paper-deep);color:var(--ink);}
 
+  .week-control{
+    padding:14px 32px;border-bottom:1px solid var(--line);background:var(--paper);
+    display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+  }
+  .week-control label{
+    font-family:'IBM Plex Mono', monospace;font-size:10.5px;
+    letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);
+  }
+  .week-slider{flex:1;min-width:160px;max-width:360px;accent-color:var(--uv);}
+  .week-value{
+    font-family:'IBM Plex Mono', monospace;font-size:13px;color:var(--ink);
+    min-width:90px;text-align:center;
+  }
+  .week-all-btn{
+    appearance:none;border:1px solid var(--line);background:var(--white);
+    padding:6px 14px;font-family:'IBM Plex Mono', monospace;font-size:11px;
+    cursor:pointer;color:var(--ink-soft);border-radius:0;
+  }
+  .week-all-btn.on{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+
   .map-wrap{position:relative;background:var(--white);border-bottom:1px solid var(--line);}
   #map{width:100%;height:560px;display:block;}
   .map-svg{width:100%;height:100%;display:block;background:var(--paper-deep);}
@@ -46,19 +84,20 @@
     font-family:'IBM Plex Mono', monospace;color:var(--ink-soft);
   }
   .legend-row{display:flex;align-items:center;gap:8px;margin:4px 0;}
-  .legend-swatch{width:14px;height:14px;border:1px solid var(--line);}
   .legend-scale{display:flex;gap:0;height:10px;margin:6px 0 4px;}
   .legend-scale span{flex:1;}
 
   .tooltip{
     position:absolute;pointer-events:none;background:var(--ink);color:var(--paper);
-    padding:10px 12px;font-size:12px;line-height:1.4;min-width:180px;
+    padding:12px 14px;font-size:12px;line-height:1.5;min-width:200px;max-width:280px;
     opacity:0;transition:opacity .12s;z-index:10;
     font-family:'IBM Plex Sans', sans-serif;
   }
-  .tooltip strong{font-family:'Source Serif 4', serif;font-size:14px;display:block;margin-bottom:4px;}
+  .tooltip strong{font-family:'Source Serif 4', serif;font-size:15px;display:block;margin-bottom:4px;color:#fff;}
+  .tooltip .tt-divider{border-top:1px solid rgba(255,255,255,0.15);margin:6px 0;}
   .tooltip .tt-row{display:flex;justify-content:space-between;gap:14px;font-family:'IBM Plex Mono', monospace;font-size:11px;}
   .tooltip .tt-row span:first-child{color:#B8C4CB;}
+  .tooltip .tt-row .tt-val{color:#fff;text-align:right;}
 
   .feed-status{
     padding:20px 32px;background:var(--paper);border-bottom:1px solid var(--line);
@@ -100,44 +139,28 @@
 </head>
 <body>
 
-<nav>
-  <a href="index.html" class="brand">
-    <img src="assets/flag-logo.png" alt="" width="54" height="44">
-    <span class="brand-text">
-      <span class="brand-line1">ellis</span>
-      <span class="brand-line2">biosecurity network</span>
-    </span>
-  </a>
-  <div class="nav-right">
-    <ul class="nav-links">
-      <li><a href="tools.html">Tools</a></li>
-      <li><a href="learn.html">Learn</a></li>
-      <li><a href="map.html" class="active">Map</a></li>
-      <li><a href="timeline.html">Timeline</a></li>
-      <li class="has-dropdown">
-        <a href="about-mission.html" class="nav-trigger">About</a>
-        <div class="dropdown-panel" role="menu">
-          <a href="about-mission.html">Mission</a>
-          <a href="about-team.html">Team</a>
-        </div>
-      </li>
-      <li><a href="shepherd.html">Shepherd</a></li>
-      <li><a href="act.html">Act</a></li>
-    </ul>
-    <a href="building-scorecard.html" class="nav-cta">Score your space</a>
-  </div>
-</nav>
-
 <div class="wrap">
+
+  <header>
+    <div class="brand">
+      <a href="index.html" aria-label="Back to Ellis home" style="display:flex; align-items:baseline; gap:12px; color:inherit; text-decoration:none;">
+        <img src="assets/flag-logo.png" alt="" width="54" height="44" style="display:block; margin-right:9px; align-self:center;">
+        <div class="mark">ellis</div>
+      </a>
+      <div class="sub">surveillance map</div>
+    </div>
+    <span class="header-spacer"></span>
+    <div class="header-tag">Weekly respiratory illness surveillance &mdash; US states and global. v0.2</div>
+  </header>
 
   <section class="page-hero">
     <a href="index.html" class="back-link" aria-label="Back to Ellis home">
       <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M8.5 2.5 L4 7 L8.5 11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>
       <span>Ellis</span>
     </a>
-    <p class="eyebrow">Surveillance map</p>
+    <p class="eyebrow">Surveillance Map</p>
     <h1>What's circulating, where.</h1>
-    <p>Weekly-updated respiratory illness and notifiable disease signal. United States pulls from <strong>CDC NNDSS</strong> at the state level. Global pulls from <strong>WHO Disease Outbreak News</strong> with ECDC and UKHSA coverage for Europe and the UK.</p>
+    <p>Real-time respiratory illness signals from the CDC's National Syndromic Surveillance Program (NSSP). Shows the percentage of emergency department visits diagnosed as COVID-19, Influenza, or RSV at the state level. Global news from WHO Disease Outbreak News.</p>
   </section>
 
   <div class="map-controls">
@@ -165,6 +188,13 @@
     </div>
   </div>
 
+  <div class="week-control">
+    <label for="weekSlider">MMWR Week</label>
+    <input type="range" id="weekSlider" class="week-slider" min="0" max="54" value="0">
+    <span class="week-value" id="weekValue">All Weeks (YTD)</span>
+    <button id="weekAllBtn" class="week-all-btn on">YTD Total</button>
+  </div>
+
   <div class="map-wrap">
     <svg id="map" class="map-svg" preserveAspectRatio="xMidYMid meet"></svg>
     <div class="legend" id="legend"></div>
@@ -175,6 +205,7 @@
     <span class="feed-pill" id="feedStatusPill"><span class="dot"></span><span id="feedStatusText">Loading data&hellip;</span></span>
     <span>Refresh with <code>node scripts/fetch-data.js</code></span>
     <span>Last update: <span id="lastUpdate">&mdash;</span></span>
+    <span style="opacity:0.7">Source: CDC NSSP (ED visit %) — real data</span>
   </div>
 
   <section class="news-strip">
@@ -189,8 +220,8 @@
       <p class="section-sub">What the map shows and what it doesn't.</p>
     </div>
     <div class="prose">
-      <p><strong>United States.</strong> Weekly case counts are aggregated from the CDC National Notifiable Diseases Surveillance System (NNDSS) public dataset. Reporting completeness varies by jurisdiction and by disease; values for the most recent 1&ndash;2 weeks are typically revised upward in subsequent reports.</p>
-      <p><strong>World.</strong> Country-level values come from WHO Disease Outbreak News headlines plus weekly surveillance summaries from ECDC (Europe) and UKHSA (UK). Where a country has not published recent data, the cell is left uncolored &mdash; this is a data gap, not an absence of disease.</p>
+      <p><strong>United States.</strong> Data from the CDC National Syndromic Surveillance Program (NSSP). Shows the percentage of emergency department visits with a diagnosis of COVID-19, Influenza, or RSV. Updated weekly. Not all states report in all weeks.</p>
+      <p><strong>World.</strong> Headlines from WHO Disease Outbreak News. Where a country has not published recent data, the cell is left uncolored &mdash; this is a data gap, not an absence of disease.</p>
       <p><strong>Not a clinical tool.</strong> Surveillance signal is for situational awareness. It does not predict local exposure, replace testing, or substitute for a healthcare provider.</p>
     </div>
   </section>
@@ -213,9 +244,9 @@
       <div class="footer-col">
         <h4>Tools</h4>
         <ul>
-          <li><a href="building-scorecard.html">Scorecard</a></li>
-          <li><a href="guv-deployment-engine.html">GUV engine</a></li>
-          <li><a href="map.html">Surveillance map</a></li>
+          <li><a href="building-scorecard.html">Building Scorecard</a></li>
+          <li><a href="guv-deployment-engine.html">GUV Deployment Engine</a></li>
+          <li><a href="map.html">Surveillance Map</a></li>
           <li><a href="#">Letter generator</a></li>
         </ul>
       </div>
@@ -223,16 +254,19 @@
         <h4>Learn</h4>
         <ul>
           <li><a href="learn.html">Overview</a></li>
-          <li><a href="#">IAQ 101</a></li>
-          <li><a href="#">The timeline</a></li>
-          <li><a href="#">Research library</a></li>
-        </ul>
+          <li><a href="learn-foundations.html">Foundations</a></li>
+          <li><a href="learn-filtration-ventilation.html">Filtration &amp; Ventilation</a></li>
+          <li><a href="learn-germicidal-uv.html">Germicidal UV</a></li>
+          <li><a href="learn-monitoring.html">Monitoring</a></li>
+          <li><a href="learn-readiness.html">Readiness</a></li>
+          <li><a href="timeline.html">The timeline</a></li>        </ul>
       </div>
       <div class="footer-col">
         <h4>Organization</h4>
         <ul>
           <li><a href="#">About &amp; sourcing</a></li>
           <li><a href="shepherd.html">Shepherd</a></li>
+          <li><a href="contact.html">Contact</a></li>
           <li><a href="#">Partner with us</a></li>
           <li><a href="#">Donate</a></li>
         </ul>
@@ -240,49 +274,45 @@
     </div>
     <div class="footer-bottom">
       <span>&copy; 2026 Ellis</span>
-      <span>v0.1 prototype</span>
+      <span>v0.2 prototype</span>
     </div>
   </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/d3@7.8.5/dist/d3.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+<script src="map-embedded-data.js"></script>
 <script>
 (function(){
   const PALETTE = ['#E3EAEE','#B7CDD9','#7FA4BB','#4F7F9C','#3D6B8A','#2E5573'];
-  const TOKENS = {
-    accent: getComputedStyle(document.documentElement).getPropertyValue('--uv').trim() || '#3D6B8A'
-  };
 
-  let DATA = null;
-  let US_TOPO = null;
-  let WORLD_TOPO = null;
-  let layer = 'us';
-  let disease = 'covid-19';
-  let scaleKind = 'linear';
+  let DATA = null, US_TOPO = null, WORLD_TOPO = null;
+  let layer = 'us', disease = 'covid-19', scaleKind = 'linear';
+  let selectedWeek = 0; // 0 = all weeks, 1-54 = specific week
 
   const $map = document.getElementById('map');
   const $tip = document.getElementById('tip');
   const $legend = document.getElementById('legend');
+  const $weekSlider = document.getElementById('weekSlider');
+  const $weekValue = document.getElementById('weekValue');
+  const $weekAllBtn = document.getElementById('weekAllBtn');
 
-  // ---- Data loading ----
-  async function loadAll(){
+  function loadAll(){
     try {
-      const [data, us, world] = await Promise.all([
-        fetch('data/surveillance.json').then(r => r.json()),
-        fetch('assets/geo/us-states-10m.json').then(r => r.json()),
-        fetch('assets/geo/world-110m.json').then(r => r.json())
-      ]);
-      DATA = data; US_TOPO = us; WORLD_TOPO = world;
-      const feeds = (data.feeds || []);
+      DATA = EMBEDDED_SURVEILLANCE;
+      // Cap week slider to current week (no fake future data)
+      if (DATA.metadata) $weekSlider.max = DATA.metadata.current_week;
+      US_TOPO = EMBEDDED_US_TOPO;
+      WORLD_TOPO = EMBEDDED_WORLD_TOPO;
+      const feeds = (DATA.feeds || []);
       const anyFailed = feeds.some(f => !f.ok);
       const pill = document.getElementById('feedStatusPill');
       const text = document.getElementById('feedStatusText');
       const lastUp = document.getElementById('lastUpdate');
-      const stamp = data.fetched_at || data.generated_at;
+      const stamp = DATA.fetched_at || DATA.generated_at;
       if (stamp) lastUp.textContent = new Date(stamp).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
-      if (anyFailed) { pill.className = 'feed-pill stale'; text.textContent = 'Partial data — one or more feeds failed'; }
-      else if (feeds.length) { pill.className = 'feed-pill'; text.textContent = 'Live — feeds refreshed'; }
+      if (anyFailed) { pill.className = 'feed-pill stale'; text.textContent = 'Partial data \u2014 one or more feeds failed'; }
+      else if (feeds.length) { pill.className = 'feed-pill'; text.textContent = 'Live \u2014 feeds refreshed'; }
       else { pill.className = 'feed-pill stale'; text.textContent = 'Using seed data'; }
       renderWhoNews();
       render();
@@ -308,13 +338,38 @@
     `).join('');
   }
 
+  // ---- Data access ----
+  function getDiseaseValue(record, dis, week) {
+    if (!record || !record.by_disease) return null;
+    const d = record.by_disease[dis];
+    if (!d) return null;
+    if (week > 0 && d.by_week && d.by_week[week] !== undefined) return d.by_week[week];
+    return d.total || null;
+  }
+
+  function getStateValue(name, dis, week) {
+    if (!name) return null;
+    const key = name.toLowerCase().replace(/\s+/g,'-');
+    return getDiseaseValue(DATA.us_states && DATA.us_states[key], dis, week);
+  }
+
+  function getStateRecord(name) {
+    if (!name) return null;
+    const key = name.toLowerCase().replace(/\s+/g,'-');
+    return DATA.us_states && DATA.us_states[key] || null;
+  }
+
+  function getCountryRecord(id) {
+    return DATA.countries && DATA.countries[id] || null;
+  }
+
   // ---- Map rendering ----
   function render(){
     if (!DATA) return;
     const svg = d3.select($map);
     svg.selectAll('*').remove();
     const { width, height } = $map.getBoundingClientRect();
-    svg.attr('viewBox', `0 0 ${width} ${height}`);
+    svg.attr('viewBox', '0 0 ' + width + ' ' + height);
 
     if (layer === 'us') renderUS(svg, width, height);
     else renderWorld(svg, width, height);
@@ -322,30 +377,34 @@
     drawLegend();
   }
 
+  function collectValuesUS() {
+    const features = topojson.feature(US_TOPO, US_TOPO.objects.states).features;
+    return features.map(f => getStateValue(f.properties.name, disease, selectedWeek)).filter(v => v != null);
+  }
+
+  function collectValuesWorld() {
+    return Object.values(DATA.countries || {}).map(c => getDiseaseValue(c, disease, selectedWeek)).filter(v => v != null);
+  }
+
   function renderUS(svg, w, h){
     const features = topojson.feature(US_TOPO, US_TOPO.objects.states).features;
-    const values = features.map(f => ({
-      id: (f.properties.name || '').toLowerCase().replace(/\s+/g,'-'),
-      name: f.properties.name,
-      v: getStateValue(f.properties.name, disease)
-    }));
+    const values = collectValuesUS();
     const projection = d3.geoAlbersUsa().fitSize([w, h], { type:'FeatureCollection', features });
     const path = d3.geoPath(projection);
-    const scale = colorScale(values.map(d => d.v).filter(v => v != null));
+    const scale = colorScale(values);
 
     svg.append('g').selectAll('path')
       .data(features)
       .join('path')
-      .attr('class', d => {
-        const v = getStateValue(d.properties.name, disease);
-        return v == null ? 'map-cell map-empty' : 'map-cell';
+      .attr('class', function(d) {
+        return getStateValue(d.properties.name, disease, selectedWeek) == null ? 'map-cell map-empty' : 'map-cell';
       })
       .attr('d', path)
-      .attr('fill', d => {
-        const v = getStateValue(d.properties.name, disease);
+      .attr('fill', function(d) {
+        var v = getStateValue(d.properties.name, disease, selectedWeek);
         return v == null ? '#E6E8E2' : scale(v);
       })
-      .on('mousemove', (event, d) => showTip(event, d.properties.name, getStateValue(d.properties.name, disease)))
+      .on('mousemove', function(event, d) { showTip(event, d.properties.name, 'us'); })
       .on('mouseleave', hideTip);
   }
 
@@ -353,35 +412,28 @@
     const features = topojson.feature(WORLD_TOPO, WORLD_TOPO.objects.countries).features;
     const projection = d3.geoNaturalEarth1().fitSize([w, h], { type:'FeatureCollection', features });
     const path = d3.geoPath(projection);
-    const scale = colorScale(Object.values(DATA.countries || {}).map(c => c.by_disease[disease] || 0));
+    const scale = colorScale(collectValuesWorld());
 
     svg.append('g').selectAll('path')
       .data(features)
       .join('path')
-      .attr('class', d => (DATA.countries && DATA.countries[d.id]) ? 'map-cell' : 'map-cell map-empty')
+      .attr('class', function(d) {
+        return getDiseaseValue(DATA.countries && DATA.countries[d.id], disease, selectedWeek) != null
+          ? 'map-cell' : 'map-cell map-empty';
+      })
       .attr('d', path)
-      .attr('fill', d => {
-        const c = DATA.countries && DATA.countries[d.id];
-        if (!c) return '#E6E8E2';
-        const v = c.by_disease[disease] || 0;
-        return scale(v);
+      .attr('fill', function(d) {
+        var c = DATA.countries && DATA.countries[d.id];
+        var v = c ? getDiseaseValue(c, disease, selectedWeek) : null;
+        return v == null ? '#E6E8E2' : scale(v);
       })
-      .on('mousemove', (event, d) => {
-        const c = DATA.countries && DATA.countries[d.id];
-        showTip(event, (c && c.name) || d.properties.name, c ? c.by_disease[disease] : null);
-      })
+      .on('mousemove', function(event, d) { showTip(event, d.id, 'world'); })
       .on('mouseleave', hideTip);
   }
 
-  function getStateValue(name, dis){
-    if (!name) return null;
-    const key = name.toLowerCase().replace(/\s+/g,'-');
-    const s = DATA.us_states && DATA.us_states[key];
-    return s ? (s.by_disease[dis] || 0) : null;
-  }
-
   function colorScale(values){
-    const max = d3.max(values) || 1;
+    var max = d3.max(values) || 1;
+    if (max === 0) return function() { return PALETTE[0]; };
     if (scaleKind === 'log') {
       return d3.scaleQuantize()
         .domain([1, Math.log10(max + 10)])
@@ -392,57 +444,160 @@
       .range(PALETTE);
   }
 
-  function showTip(event, name, value){
-    if (!name) return;
-    const rect = $map.getBoundingClientRect();
-    const left = event.clientX - rect.left + 12;
-    const top  = event.clientY - rect.top + 12;
+  function weekLabel(week) {
+    if (week === 0) return 'Season Total';
+    var months = ['Jan','Jan','Jan','Feb','Feb','Mar','Mar','Mar','Apr','Apr','May','May',
+      'Jun','Jun','Jul','Jul','Aug','Aug','Sep','Sep','Oct','Oct','Nov','Nov','Dec','Dec'];
+    var m = months[Math.min(Math.floor((week-1) / 2), months.length-1)];
+    return 'Week ' + week + ' (' + m + ')';
+  }
+
+  function formatNum(n) {
+    if (n == null) return '\u2014';
+    return n.toLocaleString();
+  }
+
+  function formatRate(n, pop) {
+    if (n == null || !pop) return '';
+    return (n / pop * 100000).toFixed(1) + ' per 100k';
+  }
+
+  function showTip(event, id, type){
+    var rect = $map.getBoundingClientRect();
+    var left = event.clientX - rect.left + 14;
+    var top  = event.clientY - rect.top + 14;
+    if (left > rect.width - 220) left = event.clientX - rect.left - 220;
+
+    var record, name, pop, val, prevVal;
+    if (type === 'us') {
+      record = getStateRecord(id);
+      name = record ? record.name : id;
+      pop = record ? record.population : null;
+      val = getStateValue(id, disease, selectedWeek);
+      if (selectedWeek > 1) prevVal = getStateValue(id, disease, selectedWeek - 1);
+    } else {
+      record = getCountryRecord(id);
+      name = record ? record.name : (id || 'Unknown');
+      pop = record ? record.population : null;
+      val = getDiseaseValue(record, disease, selectedWeek);
+      if (selectedWeek > 1) prevVal = getDiseaseValue(record, disease, selectedWeek - 1);
+    }
+
     $tip.style.left = left + 'px';
     $tip.style.top  = top + 'px';
     $tip.style.opacity = 1;
-    $tip.innerHTML = `
-      <strong>${name}</strong>
-      <div class="tt-row"><span>${disease}</span><span>${value == null ? '—' : value.toLocaleString()}</span></div>
-    `;
+
+    var diseaseLabel = disease;
+    if (DATA.metadata && DATA.metadata.diseases && DATA.metadata.diseases[disease]) {
+      diseaseLabel = DATA.metadata.diseases[disease].label;
+    }
+    var weekStr = selectedWeek === 0 ? 'Year-to-date' : weekLabel(selectedWeek);
+
+    var html = '<strong>' + name + '</strong>';
+    html += '<div class="tt-row"><span>Disease</span><span class="tt-val">' + diseaseLabel + '</span></div>';
+    html += '<div class="tt-row"><span>Period</span><span class="tt-val">' + weekStr + '</span></div>';
+    html += '<div class="tt-row"><span>ED visits</span><span class="tt-val">' + formatNum(val) + '%</span></div>';
+
+    if (pop) {
+      html += '<div class="tt-divider"></div>';
+      html += '<div class="tt-row"><span>Population</span><span class="tt-val">' + formatNum(pop) + '</span></div>';
+    }
+
+    if (prevVal != null && val != null) {
+      var pct = prevVal === 0 ? 0 : Math.round((val - prevVal) / prevVal * 100);
+      var arrow = pct > 0 ? '\u2191' : (pct < 0 ? '\u2193' : '\u2192');
+      var cls = '';
+      if (pct > 0) cls = 'style="color:#f88"';
+      else if (pct < 0) cls = 'style="color:#8f8"';
+      html += '<div class="tt-divider"></div>';
+      html += '<div class="tt-row"><span>vs prev week</span><span class="tt-val" ' + cls + '>' + arrow + ' ' + Math.abs(pct) + '%</span></div>';
+    }
+
+    if (record && record.by_disease) {
+      var others = Object.keys(record.by_disease).filter(function(d) { return d !== disease; });
+      if (others.length) {
+        html += '<div class="tt-divider"></div>';
+        for (var i = 0; i < others.length; i++) {
+          var od = others[i];
+          var ov = getDiseaseValue(record, od, selectedWeek);
+          var ol = od;
+          if (DATA.metadata && DATA.metadata.diseases && DATA.metadata.diseases[od]) {
+            ol = DATA.metadata.diseases[od].label;
+          }
+          html += '<div class="tt-row"><span>' + ol + '</span><span class="tt-val">' + formatNum(ov) + '%</span></div>';
+        }
+      }
+    }
+
+    $tip.innerHTML = html;
   }
+
   function hideTip(){ $tip.style.opacity = 0; }
 
   function drawLegend(){
-    let max = 0;
-    if (layer === 'us') {
-      Object.values(DATA.us_states || {}).forEach(s => { max = Math.max(max, (s.by_disease[disease] || 0)); });
-    } else {
-      Object.values(DATA.countries || {}).forEach(c => { max = Math.max(max, (c.by_disease[disease] || 0)); });
+    var values = layer === 'us' ? collectValuesUS() : collectValuesWorld();
+    var max = d3.max(values) || 1;
+    var diseaseLabel = disease;
+    if (DATA.metadata && DATA.metadata.diseases && DATA.metadata.diseases[disease]) {
+      diseaseLabel = DATA.metadata.diseases[disease].label;
     }
-    if (!max) max = 1;
-    $legend.innerHTML = `
-      <div style="font-weight:500;color:var(--ink);margin-bottom:6px;">Weekly ${disease === 'covid-19' ? 'COVID-19' : disease} cases</div>
-      <div class="legend-scale">${PALETTE.map(c => `<span style="background:${c}"></span>`).join('')}</div>
-      <div class="legend-row"><span>low</span><span style="margin-left:auto;">${max.toLocaleString()}</span></div>
-      <div class="legend-row" style="color:var(--ink-soft);font-size:10.5px;margin-top:6px;">
-        <span style="display:inline-block;width:10px;height:10px;background:#E6E8E2;border:1px solid var(--line);margin-right:6px;"></span>
-        No data
-      </div>
-    `;
+    var weekStr = selectedWeek === 0 ? '2026 year-to-date' : weekLabel(selectedWeek) + ', 2026';
+
+    $legend.innerHTML = (
+      '<div style="font-weight:500;color:var(--ink);margin-bottom:4px;">' + diseaseLabel + '</div>' +
+      '<div style="font-size:10.5px;color:var(--ink-soft);margin-bottom:6px;">' + weekStr + '</div>' +
+      '<div class="legend-scale">' + PALETTE.map(function(c) { return '<span style="background:' + c + '"></span>'; }).join('') + '</div>' +
+      '<div class="legend-row"><span>low</span><span style="margin-left:auto;">' + max + '%</span></div>' +
+      '<div class="legend-row" style="color:var(--ink-soft);font-size:10.5px;margin-top:6px;">' +
+        '<span style="display:inline-block;width:10px;height:10px;background:#E6E8E2;border:1px solid var(--line);margin-right:6px;"></span>' +
+        'No data</div>'
+    );
   }
+
+  // ---- Week slider ----
+  function updateWeek(sliderVal) {
+    var v = parseInt(sliderVal, 10);
+    if (v === 0) {
+      selectedWeek = 0;
+      $weekValue.textContent = 'All Weeks (YTD)';
+      if (DATA && DATA.metadata) $weekSlider.max = DATA.metadata.current_week;
+      $weekAllBtn.classList.add('on');
+    } else {
+      selectedWeek = v;
+      $weekValue.textContent = weekLabel(v);
+      $weekAllBtn.classList.remove('on');
+    }
+    render();
+  }
+
+  $weekSlider.addEventListener('input', function() {
+    var v = parseInt(this.value, 10);
+    if (v !== 0) $weekAllBtn.classList.remove('on');
+    updateWeek(v);
+  });
+
+  $weekAllBtn.addEventListener('click', function() {
+    $weekSlider.value = 0;
+    updateWeek(0);
+  });
 
   // ---- Controls ----
   function bindSeg(id, attr, onChange){
-    const seg = document.getElementById(id);
-    seg.addEventListener('click', e => {
-      const b = e.target.closest('button');
+    var seg = document.getElementById(id);
+    seg.addEventListener('click', function(e) {
+      var b = e.target.closest('button');
       if (!b) return;
-      seg.querySelectorAll('button').forEach(x => x.classList.remove('on'));
+      seg.querySelectorAll('button').forEach(function(x) { x.classList.remove('on'); });
       b.classList.add('on');
       onChange(b.getAttribute(attr));
       render();
     });
   }
-  bindSeg('layerSeg','data-layer', v => layer = v);
-  bindSeg('diseaseSeg','data-disease', v => disease = v);
-  bindSeg('scaleSeg','data-scale', v => scaleKind = v);
+  bindSeg('layerSeg','data-layer', function(v) { layer = v; });
+  bindSeg('diseaseSeg','data-disease', function(v) { disease = v; });
+  bindSeg('scaleSeg','data-scale', function(v) { scaleKind = v; });
 
-  window.addEventListener('resize', () => render());
+  window.addEventListener('resize', render);
 
   loadAll();
 })();

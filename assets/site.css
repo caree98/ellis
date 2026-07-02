@@ -127,6 +127,8 @@ h3{font-family:'Source Serif 4', serif;font-weight:500;font-size:21px;margin:0 0
 
 /* ----- Section primitives ----- */
 .section-pad{padding:72px 32px;}
+.section-sm{font-size:0.85em;}
+.section-wide .section-head,.section-wide .prose{max-width:none;}
 .section-head{margin-bottom:40px;max-width:600px;}
 .section-sub{font-size:15px;color:var(--ink-soft);margin:0;}
 
