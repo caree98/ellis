@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Air Currents</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0f;
+    overflow: hidden;
+    height: 100vh;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+
+  canvas {
+    display: block;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 40px 48px;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .title {
+    color: rgba(255,255,255,0.85);
+    font-weight: 300;
+    letter-spacing: 0.03em;
+  }
+
+  .title h1 {
+    font-size: 28px;
+    font-weight: 300;
+    margin-bottom: 4px;
+  }
+
+  .title p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.06em;
+    font-weight: 300;
+  }
+
+  .controls {
+    pointer-events: auto;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .controls label {
+    color: rgba(255,255,255,0.5);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .controls label:hover {
+    color: rgba(255,255,255,0.8);
+  }
+
+  .controls select {
+    pointer-events: auto;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.7);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: inherit;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .controls select:hover { border-color: rgba(255,255,255,0.3); }
+  .controls select option { background: #14141e; color: rgba(255,255,255,0.8); }
+
+  .controls input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 80px;
+    height: 2px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .controls input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.6);
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .controls input[type="range"]::-webkit-slider-thumb:hover {
+    background: rgba(255,255,255,0.9);
+    transform: scale(1.2);
+  }
+
+  .controls input[type="range"]::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.6);
+    cursor: pointer;
+  }
+
+  .stats {
+    color: rgba(255,255,255,0.25);
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .stats span { color: rgba(255,255,255,0.45); }
+
+  @media (max-width: 640px) {
+    .overlay { padding: 24px 20px; }
+    .title h1 { font-size: 22px; }
+    .controls { flex-wrap: wrap; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+
+<div class="overlay">
+  <header>
+    <div class="title">
+      <h1>Air Currents</h1>
+      <p>meteorological flow · pressure systems</p>
+    </div>
+    <div class="controls">
+      <label>
+        speed
+                <input type="range" id="speed" min="0.1" max="2" step="0.05" value="0.95">
+      </label>
+      <label>
+        trail
+                <input type="range" id="trailLen" min="4" max="240" step="1" value="35">
+      </label>
+      <label>
+        mode
+        <select id="mode">
+          <option value="meteo" selected>meteorological</option>
+          <option value="waves">wave interference</option>
+          <option value="vortex">vortex field</option>
+          <option value="laminar">laminar flow</option>
+          <option value="turbulent">turbulent</option>
+        </select>
+      </label>
+    </div>
+  </header>
+  <div class="stats">
+    <span id="particleCount">0</span> particles
+  </div>
+</div>
+
+<script>
+(function() {
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  const countEl = document.getElementById('particleCount');
+
+  let W, H;
+  let particles = [];
+
+  const speedInput = document.getElementById('speed');
+  const trailInput = document.getElementById('trailLen');
+  const modeSelect = document.getElementById('mode');
+
+  let speedMul = 0.95;
+  let trailLen = 35;
+  let currentMode = 'meteo';
+
+  // ─── Wave parameters ──────────────────────────────────────────
+
+  function makeWaves(count) {
+    const waves = [];
+    for (let i = 0; i < count; i++) {
+      const angle = (i / count) * Math.PI * 2 + (Math.random() - 0.5) * 0.3;
+      waves.push({
+        kx: Math.cos(angle) * (0.002 + Math.random() * 0.012),
+        ky: Math.sin(angle) * (0.002 + Math.random() * 0.012),
+        omega: 0.12 + Math.random() * 0.35,
+        phi: Math.random() * Math.PI * 2,
+        amp: 0.3 + Math.random() * 0.5,
+      });
+    }
+    return waves;
+  }
+
+  let wavesX = makeWaves(8);
+  let wavesY = makeWaves(8);
+
+  // ─── Field functions ──────────────────────────────────────────
+
+  function waveField(x, y, t) {
+    let fx = 0.22, fy = 0.04;
+    fx += 0.6 * Math.sin(y * 0.0018 + t * 0.0015) * Math.cos(x * 0.0012 + t * 0.001);
+    fy += 0.5 * Math.cos(x * 0.0020 + t * 0.0013) * Math.sin(y * 0.0015 + t * 0.0011);
+    for (const w of wavesX) fx += w.amp * Math.sin(w.kx * x + w.ky * y + w.omega * t + w.phi);
+    for (const w of wavesY) fy += w.amp * Math.sin(w.kx * x + w.ky * y + w.omega * t + w.phi);
+    fx += 0.15 * Math.sin(x * 0.0025 + y * 0.0015 + t * 0.002);
+    fy += 0.15 * Math.cos(x * 0.0015 - y * 0.0025 + t * 0.0022);
+    return { x: fx, y: fy };
+  }
+
+  function vortexField(x, y, t) {
+    const cx = W / 2, cy = H / 2;
+    const dx = x - cx, dy = y - cy;
+    const dist = Math.hypot(dx, dy) + 0.1;
+    const angle = Math.atan2(dy, dx);
+    const r = dist / Math.max(W, H) * 4;
+    const vTangential = (1 - Math.exp(-r * r)) / r * 1.2;
+    const pulse = 1 + 0.3 * Math.sin(t * 0.008 + r * 0.5);
+    const tx = -Math.sin(angle) * vTangential * pulse;
+    const ty = Math.cos(angle) * vTangential * pulse;
+    const ripple = 0.6 * Math.sin(dist * 0.02 - t * 0.02);
+    return { x: tx + ripple * Math.cos(angle + 0.5), y: ty + ripple * Math.sin(angle + 0.5) };
+  }
+
+  function laminarField(x, y, t) {
+    const layerY = y * 0.008;
+    const shear = 0.8 + 0.3 * Math.sin(layerY + t * 0.003);
+    const wobble = 0.5 * Math.sin(x * 0.004 + t * 0.005) * Math.cos(y * 0.006 + t * 0.004);
+    return { x: shear * 1.2 + wobble * 0.4, y: 0.15 * Math.sin(x * 0.006 + y * 0.004 + t * 0.006) };
+  }
+
+  function turbulentField(x, y, t) {
+    let fx = 0.3, fy = 0.1;
+    for (let s = 1; s <= 4; s++) {
+      const scale = 0.003 * s, amp = 0.8 / s;
+      fx += amp * Math.sin(x * scale + t * 0.003 * s + y * scale * 0.7);
+      fy += amp * Math.cos(y * scale + t * 0.004 * s - x * scale * 0.5);
+    }
+    for (let i = 0; i < 3; i++) {
+      const ex = (i * 137 + 50) % W, ey = (i * 367 + 200) % H;
+      const dx = x - ex, dy = y - ey, d = Math.hypot(dx, dy);
+      if (d < 200) { const str = 40 / (d + 5); fx += -dy * str * 0.015; fy += dx * str * 0.015; }
+    }
+    return { x: fx, y: fy };
+  }
+
+  // ─── Meteorological field ─────────────────────────────────────
+
+  const pressureSystems = [];
+
+  function initPressureSystems() {
+    pressureSystems.length = 0;
+    pressureSystems.push({ x: W * 0.30, y: H * 0.40, strength: 0.8, radius: Math.min(W, H) * 0.22, drift: 0.015 });
+    pressureSystems.push({ x: W * 0.60, y: H * 0.55, strength: -0.7, radius: Math.min(W, H) * 0.20, drift: -0.012 });
+    pressureSystems.push({ x: W * 0.45, y: H * 0.25, strength: 0.45, radius: Math.min(W, H) * 0.14, drift: 0.02 });
+  }
+
+  function meteoField(x, y, t) {
+    let fx = 0.25, fy = 0.04;
+    for (const s of pressureSystems) {
+      const sx = s.x + Math.sin(t * s.drift * 0.02 + s.x * 0.001) * 50;
+      const sy = s.y + Math.cos(t * s.drift * 0.025 + s.y * 0.001) * 35;
+      const dx = x - sx, dy = y - sy;
+      const dist = Math.hypot(dx, dy) + 2;
+      const r = dist / s.radius;
+      let speed;
+      if (r < 1) speed = s.strength * r * 1.0;
+      else speed = s.strength * 1.0 / (r * r);
+      const tx = -dy / dist * speed;
+      const ty = dx / dist * speed;
+      const radial = -s.strength * 0.05 / (r + 0.4);
+      fx += tx - dx / dist * radial;
+      fy += ty - dy / dist * radial;
+    }
+    // Background Rossby waves
+    fx += 0.3 * Math.sin(y * 0.0015 + t * 0.002) * Math.cos(x * 0.0008 + t * 0.0012);
+    fy += 0.25 * Math.cos(x * 0.0018 + t * 0.0018) * Math.sin(y * 0.0012 + t * 0.0015);
+    // Turbulent overlay — small eddies + multi-scale noise
+    for (let s = 1; s <= 3; s++) {
+      const scale = 0.003 * s, amp = 0.35 / s;
+      fx += amp * Math.sin(x * scale + t * 0.003 * s + y * scale * 0.7);
+      fy += amp * Math.cos(y * scale + t * 0.004 * s - x * scale * 0.5);
+    }
+    for (let i = 0; i < 3; i++) {
+      const ex = (i * 137 + 50) % W, ey = (i * 367 + 200) % H;
+      const dx = x - ex, dy = y - ey, d = Math.hypot(dx, dy);
+      if (d < 180) { const str = 30 / (d + 5); fx += -dy * str * 0.012; fy += dx * str * 0.012; }
+    }
+    return { x: fx, y: fy };
+  }
+
+  function getField(x, y, t) {
+    switch (currentMode) {
+      case 'meteo':    return meteoField(x, y, t);
+      case 'waves':    return waveField(x, y, t);
+      case 'vortex':   return vortexField(x, y, t);
+      case 'laminar':  return laminarField(x, y, t);
+      case 'turbulent': return turbulentField(x, y, t);
+      default:         return meteoField(x, y, t);
+    }
+  }
+
+  // ─── Particles ─────────────────────────────────────────────────
+  const PARTICLE_COUNT = 900;
+  const MAX_TRAIL = 240;
+  const COLLISION_DIST = 12;
+
+  const colors = [
+    { h: 200, s: 80, l: 45 },
+    { h: 205, s: 75, l: 50 },
+    { h: 210, s: 70, l: 55 },
+    { h: 215, s: 72, l: 58 },
+    { h: 220, s: 68, l: 60 },
+    { h: 225, s: 65, l: 63 },
+    { h: 195, s: 78, l: 40 },
+    { h: 190, s: 82, l: 38 },
+  ];
+
+  function createParticle(x, y) {
+    const c = colors[Math.floor(Math.random() * colors.length)];
+    return {
+      x: x !== undefined ? x : Math.random() * W,
+      y: y !== undefined ? y : Math.random() * H,
+      vx: 0, vy: 0,
+      color: c,
+      speed: 0.75,
+      trail: [],
+      born: 0,
+    };
+  }
+
+  // ─── Spatial grid for collision ────────────────────────────────
+  const GRID_CELL = 30;
+  let grid = {};
+  let gridCols = 0;
+
+  function gridKey(gx, gy) { return gx + ',' + gy; }
+
+  function clearGrid() {
+    grid = {};
+    gridCols = Math.ceil(W / GRID_CELL);
+  }
+
+  function addToGrid(idx) {
+    const p = particles[idx];
+    const gx = Math.floor(p.x / GRID_CELL);
+    const gy = Math.floor(p.y / GRID_CELL);
+    const key = gridKey(gx, gy);
+    if (!grid[key]) grid[key] = [];
+    grid[key].push(idx);
+  }
+
+  function nearbyIndices(px, py) {
+    const cx = Math.floor(px / GRID_CELL);
+    const cy = Math.floor(py / GRID_CELL);
+    const result = [];
+    for (let dx = -1; dx <= 1; dx++) {
+      for (let dy = -1; dy <= 1; dy++) {
+        const gx = cx + dx, gy = cy + dy;
+        if (gx < 0 || gy < 0 || gx >= gridCols || gy >= Math.ceil(H / GRID_CELL)) continue;
+        const cell = grid[gridKey(gx, gy)];
+        if (cell) {
+          for (let k = 0; k < cell.length; k++) result.push(cell[k]);
+        }
+      }
+    }
+    return result;
+  }
+
+  function respawnParticle(p) {
+    const edge = Math.floor(Math.random() * 4);
+    const f = Math.random();
+    switch (edge) {
+      case 0: p.x = -20; p.y = f * H; break;
+      case 1: p.x = W + 20; p.y = f * H; break;
+      case 2: p.x = f * W; p.y = -20; break;
+      case 3: p.x = f * W; p.y = H + 20; break;
+    }
+    p.vx = 0; p.vy = 0;
+    p.trail = [];
+    p.born = frame;
+  }
+
+  function initParticles() {
+    particles = [];
+    const cols = Math.ceil(Math.sqrt(PARTICLE_COUNT * (W / H)));
+    const rows = Math.ceil(PARTICLE_COUNT / cols);
+    const cellW = W / cols;
+    const cellH = H / rows;
+    let idx = 0;
+    for (let r = 0; r < rows && idx < PARTICLE_COUNT; r++) {
+      for (let c = 0; c < cols && idx < PARTICLE_COUNT; c++) {
+        particles.push(createParticle((c + Math.random()) * cellW, (r + Math.random()) * cellH));
+        idx++;
+      }
+    }
+    countEl.textContent = particles.length;
+  }
+
+  // ─── Update ────────────────────────────────────────────────────
+  let frame = 0;
+
+  function update() {
+    frame++;
+    const t = frame * 1;
+
+    // Physics step
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+
+      if (p.x < -80 || p.x > W + 80 || p.y < -80 || p.y > H + 80) {
+        respawnParticle(p);
+      }
+
+      const force = getField(p.x, p.y, t);
+      const accel = 0.08;
+      p.vx += force.x * accel * p.speed;
+      p.vy += force.y * accel * p.speed;
+
+      const maxSpd = 2.0 * p.speed;
+      const spd = Math.hypot(p.vx, p.vy);
+      if (spd > maxSpd) { p.vx = (p.vx / spd) * maxSpd; p.vy = (p.vy / spd) * maxSpd; }
+
+      p.x += p.vx * speedMul;
+      p.y += p.vy * speedMul;
+
+      p.trail.push({ x: p.x, y: p.y });
+      if (p.trail.length > Math.min(trailLen, MAX_TRAIL)) p.trail.shift();
+    }
+
+    // Collision detection
+    clearGrid();
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      if (p.trail.length < 5) {
+        addToGrid(i);
+        continue;
+      }
+      const nearby = nearbyIndices(p.x, p.y);
+      let collision = false;
+      for (let k = 0; k < nearby.length; k++) {
+        const j = nearby[k];
+        if (j === i) continue;
+        const q = particles[j];
+        if (q.trail.length < 5) continue;
+        const dx = p.x - q.x, dy = p.y - q.y;
+        if (dx * dx + dy * dy < COLLISION_DIST * COLLISION_DIST) {
+          if (p.trail.length >= q.trail.length) {
+            respawnParticle(q);
+          } else {
+            respawnParticle(p);
+            collision = true;
+          }
+          if (collision) break;
+        }
+      }
+      if (!collision) addToGrid(i);
+    }
+  }
+
+  // ─── Render ────────────────────────────────────────────────────
+  function render() {
+    ctx.fillStyle = 'rgba(10, 10, 15, 0.18)';
+    ctx.fillRect(0, 0, W, H);
+
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      const age = Math.min(1, (frame - p.born) * 0.008);
+      const alpha = age * 0.7;
+
+      const trail = p.trail;
+      const lineW = 4;
+      if (trail.length > 1) {
+        const len = trail.length;
+        for (let j = 0; j < len - 1; j++) {
+          const segAlpha = (j / len) * alpha * 0.35;
+          ctx.beginPath();
+          ctx.moveTo(trail[j].x, trail[j].y);
+          ctx.lineTo(trail[j + 1].x, trail[j + 1].y);
+          ctx.strokeStyle = `hsla(${p.color.h}, ${p.color.s}%, ${p.color.l}%, ${segAlpha})`;
+          ctx.lineWidth = lineW;
+          ctx.lineCap = 'butt';
+          ctx.stroke();
+        }
+      }
+
+      const hs = 2;
+      ctx.fillStyle = `hsla(${p.color.h}, ${p.color.s}%, ${Math.min(75, p.color.l + 18)}%, ${alpha})`;
+      ctx.fillRect(p.x - hs, p.y - hs, hs * 2, hs * 2);
+    }
+  }
+
+  // ─── Loop ──────────────────────────────────────────────────────
+  function loop() {
+    update();
+    render();
+    requestAnimationFrame(loop);
+  }
+
+  // ─── Resize ────────────────────────────────────────────────────
+  function resize() {
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = W;
+    canvas.height = H;
+    initPressureSystems();
+    for (const p of particles) p.trail = [];
+  }
+
+  // ─── Controls ──────────────────────────────────────────────────
+  speedInput.addEventListener('input', () => { speedMul = parseFloat(speedInput.value); });
+  trailInput.addEventListener('input', () => { trailLen = parseInt(trailInput.value); });
+  modeSelect.addEventListener('change', () => {
+    currentMode = modeSelect.value;
+    for (const p of particles) { p.vx = 0; p.vy = 0; p.trail = []; }
+  });
+
+  // ─── Init ──────────────────────────────────────────────────────
+  window.addEventListener('resize', resize);
+  resize();
+  initPressureSystems();
+  initParticles();
+  loop();
+})();
+</script>
+</body>
+</html>

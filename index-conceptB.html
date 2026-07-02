@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ellis — The new gateway to a safer place</title>
+<meta name="description" content="Ellis turns the current science on ventilation, filtration, and germicidal UV into tools you can use today.">
+<link rel="icon" type="image/png" href="assets/flag-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  /* ═══════════════════════════════════════════════
+     Concept B: "The Grid / Blueprint"
+     Architectural layout. Visible grid lines,
+     dimension markers, coordinate labels, framed
+     content blocks like schematic panels. Very
+     structured, systematic, precise.
+     ═══════════════════════════════════════════════ */
+
+  .bp-grid-overlay{
+    background:var(--white);
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:60px 60px;
+    background-position:-1px -1px;
+    position:relative;
+  }
+
+  /* Hero panel */
+  .bp-hero{
+    padding:88px 32px 72px;
+    position:relative;
+  }
+  .bp-hero::after{
+    content:'';
+    position:absolute;
+    bottom:0;left:32px;right:32px;
+    height:1px;
+    background:var(--line);
+  }
+  .bp-hero-inner{
+    max-width:1180px;margin:0 auto;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+  }
+  @media (max-width:800px){.bp-hero-inner{grid-template-columns:1fr;}}
+  .bp-hero-left{
+    position:relative;
+  }
+  .bp-hero-left::before{
+    content:'01';
+    position:absolute;
+    top:-44px;left:0;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;color:var(--line);
+    letter-spacing:0.08em;
+  }
+  .bp-hero-left .bp-tag{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:9px;letter-spacing:0.14em;text-transform:uppercase;
+    color:var(--uv);margin:0 0 18px;
+    border:1px solid var(--line);padding:4px 10px;
+  }
+  .bp-hero-left h1{
+    font-family:'Source Serif 4', serif;
+    font-weight:400;font-size:42px;line-height:1.06;
+    color:var(--ink);margin:0 0 16px;
+    letter-spacing:-0.02em;
+  }
+  .bp-hero-left h1 em{
+    font-style:italic;font-weight:600;color:var(--uv);
+    display:block;
+  }
+  .bp-hero-left .bp-lede{
+    font-size:15px;color:var(--ink-soft);
+    line-height:1.55;max-width:380px;margin:0 0 28px;
+  }
+  .bp-hero-left .bp-cta-row{
+    display:flex;gap:10px;flex-wrap:wrap;
+  }
+  .bp-hero-left .bp-cta-row .btn{
+    font-size:13px;padding:12px 22px;
+  }
+  .bp-hero-right{
+    padding:20px 0;
+    display:flex;flex-direction:column;gap:16px;
+  }
+  .bp-dimension{
+    border:1px solid var(--line);
+    padding:18px 22px;
+    background:var(--white);
+    position:relative;
+  }
+  .bp-dimension::before{
+    content:attr(data-label);
+    position:absolute;
+    top:-8px;left:12px;
+    background:var(--white);padding:0 6px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:9px;letter-spacing:0.1em;
+    color:var(--ink-soft);
+  }
+  .bp-dim-val{
+    font-family:'Source Serif 4', serif;
+    font-size:28px;font-weight:500;color:var(--ink);
+    margin:0;letter-spacing:-0.01em;
+    display:flex;align-items:baseline;gap:8px;
+  }
+  .bp-dim-val .unit{
+    font-size:13px;font-family:'IBM Plex Sans',sans-serif;
+    font-weight:400;color:var(--ink-soft);
+  }
+  .bp-dim-sub{
+    font-size:12px;color:var(--ink-soft);margin:2px 0 0;
+  }
+  .bp-dim-link{
+    font-size:12px;font-weight:500;color:var(--uv);
+    text-decoration:none;display:flex;align-items:center;gap:6px;
+  }
+  .bp-dim-link:hover{color:var(--ink);}
+
+  /* Section header */
+  .bp-section-head{
+    max-width:1180px;margin:0 auto;
+    padding:56px 32px 28px;
+    display:flex;align-items:baseline;justify-content:space-between;
+    gap:20px;flex-wrap:wrap;
+  }
+  .bp-section-head .bp-sh-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
+    color:var(--ink-soft);
+    display:flex;align-items:center;gap:8px;
+  }
+  .bp-section-head .bp-sh-label::before{
+    content:'\25A0';font-size:8px;color:var(--uv);
+  }
+  .bp-section-head h2{
+    font-family:'Source Serif 4', serif;
+    font-weight:500;font-size:24px;margin:0;
+    letter-spacing:-0.01em;
+  }
+  .bp-section-head .bp-meta{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;color:var(--line);letter-spacing:0.04em;
+  }
+
+  /* Schematic tool panel */
+  .bp-panel{
+    max-width:1180px;margin:0 auto;
+    padding:0 32px 56px;
+  }
+  .bp-tool-panel{
+    border:2px solid var(--ink);
+    background:var(--white);
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    position:relative;
+  }
+  @media (max-width:800px){.bp-tool-panel{grid-template-columns:1fr;}}
+  .bp-tool-panel::before{
+    content:'SCHEMATIC — SECTION A';
+    position:absolute;
+    top:-11px;left:12px;
+    background:var(--white);padding:0 8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:9px;letter-spacing:0.1em;
+    color:var(--uv);
+  }
+  .bp-tool-panel::after{
+    content:'SCALE — 1:1';
+    position:absolute;
+    bottom:-11px;right:12px;
+    background:var(--white);padding:0 8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:9px;letter-spacing:0.1em;
+    color:var(--line);
+  }
+  .bp-tool-cell{
+    padding:36px 28px;
+    border-right:1px solid var(--line);
+    text-decoration:none;color:var(--ink);
+    display:flex;flex-direction:column;
+    transition:background .15s;
+  }
+  .bp-tool-cell:last-child{border-right:none;}
+  .bp-tool-cell:hover{background:var(--uv-soft);}
+  .bp-tool-cell .tc-ref{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;color:var(--line);letter-spacing:0.04em;
+    margin:0 0 14px;
+  }
+  .bp-tool-cell h3{
+    font-family:'Source Serif 4', serif;
+    font-size:20px;font-weight:500;margin:0 0 10px;
+  }
+  .bp-tool-cell p{
+    font-size:13px;color:var(--ink-soft);
+    margin:0 0 18px;line-height:1.5;flex-grow:1;
+  }
+  .bp-tool-cell .tc-action{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;font-weight:500;color:var(--uv);
+    display:flex;align-items:center;gap:6px;
+  }
+  .bp-tool-cell:hover .tc-action{color:var(--ink);}
+
+  /* Linked panel grid */
+  .bp-linked-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:0;
+    border:1px solid var(--line);
+    border-top:3px solid var(--uv);
+  }
+  @media (max-width:600px){.bp-linked-grid{grid-template-columns:1fr 1fr;}}
+  .bp-linked-item{
+    padding:20px 24px;
+    border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    text-decoration:none;color:var(--ink);
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    transition:background .15s;
+  }
+  .bp-linked-item:nth-child(3n){border-right:none;}
+  .bp-linked-item:hover{background:var(--uv-soft);}
+  .bp-linked-item .li-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:9px;letter-spacing:0.1em;text-transform:uppercase;
+    color:var(--ink-soft);margin:0 0 2px;
+  }
+  .bp-linked-item .li-title{
+    font-size:14px;font-weight:500;margin:0;
+  }
+  .bp-linked-item .li-arrow{
+    font-size:14px;color:var(--line);
+  }
+  .bp-linked-item:hover .li-arrow{color:var(--uv);}
+
+  /* Spec footer */
+  .bp-spec-footer{
+    max-width:1180px;margin:0 auto;
+    padding:32px 32px 48px;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;
+  }
+  .bp-spec-footer span{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:9px;letter-spacing:0.08em;
+    color:var(--line);text-transform:uppercase;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="brand">
+    <img src="assets/flag-logo.png" alt="" width="54" height="44">
+    <span class="brand-text">
+      <span class="brand-line1">ellis</span>
+      <span class="brand-line2">biosecurity network</span>
+    </span>
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li class="has-dropdown">
+        <a href="about-mission.html" class="nav-trigger">About</a>
+        <div class="dropdown-panel" role="menu">
+          <a href="about-mission.html">Mission</a>
+          <a href="about-team.html">Team</a>
+        </div>
+      </li>
+      <li class="has-dropdown">
+        <a href="learn.html" class="nav-trigger">Learn</a>
+        <div class="dropdown-panel" role="menu">
+          <a href="learn.html">Overview</a>
+          <a href="learn-foundations.html">Foundations</a>
+          <a href="learn-filtration-ventilation.html">Filtration &amp; Ventilation</a>
+          <a href="learn-germicidal-uv.html">Germicidal UV</a>
+          <a href="learn-monitoring.html">Monitoring</a>
+          <a href="learn-readiness.html">Readiness</a>
+        </div>
+      </li>
+      <li class="has-dropdown">
+        <a href="tools.html" class="nav-trigger">Tools</a>
+        <div class="dropdown-panel" role="menu">
+          <a href="building-scorecard.html">Building Scorecard</a>
+          <a href="guv-deployment-engine.html">GUV Deployment Engine</a>
+          <a href="map.html">Surveillance Map</a>
+        </div>
+      </li>
+      <li><a href="shepherd.html">Shepherd</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── Grid background wrapper ── -->
+<div class="bp-grid-overlay">
+
+  <!-- ── Hero ── -->
+  <section class="bp-hero">
+    <div class="bp-hero-inner">
+      <div class="bp-hero-left">
+        <span class="bp-tag">Biosecurity network</span>
+        <h1>Air quality isn't abstract. <em>It's engineering.</em></h1>
+        <p class="bp-lede">Every shared space has a spec. We help you find it, understand it, and improve it — with tools that think like an engineer and talk like a human.</p>
+        <div class="bp-cta-row">
+          <a href="building-scorecard.html" class="btn">Run the scorecard</a>
+          <a href="learn.html" class="btn secondary">Read the specs</a>
+        </div>
+      </div>
+      <div class="bp-hero-right">
+        <div class="bp-dimension" data-label="MEASUREMENT">
+          <p class="bp-dim-val">8,204 <span class="unit">assessments</span></p>
+          <p class="bp-dim-sub">Completed this week across all tools</p>
+        </div>
+        <div class="bp-dimension" data-label="SIGNAL">
+          <p class="bp-dim-val">Moderate</p>
+          <p class="bp-dim-sub">Respiratory activity &middot; CDC ILINet &middot; Week of Jun 15</p>
+        </div>
+        <div class="bp-dimension" data-label="TREND">
+          <p class="bp-dim-val">+12<span class="unit">% wastewater</span></p>
+          <p class="bp-dim-sub">SARS-CoV-2 national composite &middot; <a href="map.html" class="bp-dim-link">View map &rarr;</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Section: Tools (Schematic Panel) ── -->
+  <div class="bp-section-head">
+    <div>
+      <p class="bp-sh-label">Tool suite &middot; v0.1</p>
+      <h2>Three instruments. One system.</h2>
+    </div>
+    <span class="bp-meta">1180mm × 3-column grid</span>
+  </div>
+  <div class="bp-panel">
+    <div class="bp-tool-panel">
+      <a href="building-scorecard.html" class="bp-tool-cell">
+        <span class="tc-ref">REF: BLD-001</span>
+        <h3>Building Scorecard</h3>
+        <p>Rate every factor that matters — ventilation, filtration, occupancy, risk profile. Gets you a defensible score in under 30 minutes.</p>
+        <span class="tc-action">Open schematic &rarr;</span>
+      </a>
+      <a href="guv-deployment-engine.html" class="bp-tool-cell">
+        <span class="tc-ref">REF: GUV-001</span>
+        <h3>GUV Deployment Engine</h3>
+        <p>Input a room. Get a fixture layout, coverage model, and installation spec for upper-air germicidal UV.</p>
+        <span class="tc-action">Run calculation &rarr;</span>
+      </a>
+      <a href="map.html" class="bp-tool-cell">
+        <span class="tc-ref">REF: SURV-001</span>
+        <h3>Surveillance Map</h3>
+        <p>Weekly wastewater and respiratory illness signals for the US and globally. Raw public data, cleanly presented.</p>
+        <span class="tc-action">View data &rarr;</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ── Linked sections ── -->
+  <div class="bp-section-head">
+    <div>
+      <p class="bp-sh-label">System map &middot; full topology</p>
+      <h2>Explore the network.</h2>
+    </div>
+    <span class="bp-meta">6 nodes</span>
+  </div>
+  <div class="bp-panel">
+    <div class="bp-linked-grid">
+      <a href="learn.html" class="bp-linked-item">
+        <div>
+          <p class="li-label">Learn</p>
+          <p class="li-title">Science &amp; foundations</p>
+        </div>
+        <span class="li-arrow">&rarr;</span>
+      </a>
+      <a href="shepherd.html" class="bp-linked-item">
+        <div>
+          <p class="li-label">Shepherd</p>
+          <p class="li-title">Weekly intelligence</p>
+        </div>
+        <span class="li-arrow">&rarr;</span>
+      </a>
+      <a href="timeline.html" class="bp-linked-item">
+        <div>
+          <p class="li-label">Timeline</p>
+          <p class="li-title">History of biodefense</p>
+        </div>
+        <span class="li-arrow">&rarr;</span>
+      </a>
+      <a href="act.html" class="bp-linked-item">
+        <div>
+          <p class="li-label">Act</p>
+          <p class="li-title">Take action</p>
+        </div>
+        <span class="li-arrow">&rarr;</span>
+      </a>
+      <a href="about-mission.html" class="bp-linked-item">
+        <div>
+          <p class="li-label">About</p>
+          <p class="li-title">Mission &amp; team</p>
+        </div>
+        <span class="li-arrow">&rarr;</span>
+      </a>
+      <a href="contact.html" class="bp-linked-item">
+        <div>
+          <p class="li-label">Contact</p>
+          <p class="li-title">Get in touch</p>
+        </div>
+        <span class="li-arrow">&rarr;</span>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Footer specs ── -->
+<div class="bp-spec-footer">
+  <span>Project: ellis / biosecurity network</span>
+  <span>Sheet: landing page &middot; Rev A</span>
+  <span>&copy; 2026 &middot; v0.1 prototype</span>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-row">
+          <img src="assets/flag-logo.png" alt="" width="30" height="30">
+          <span class="footer-brand-text">
+            <span class="footer-brand-line1">ellis</span>
+            <span class="footer-brand-line2">biosecurity network</span>
+          </span>
+        </div>
+        <p class="footer-tag">Indoor air defense and pandemic preparedness, made actionable. Not a substitute for a licensed HVAC engineer or industrial hygienist.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <ul>
+          <li><a href="building-scorecard.html">Building Scorecard</a></li>
+          <li><a href="guv-deployment-engine.html">GUV Deployment Engine</a></li>
+          <li><a href="map.html">Surveillance Map</a></li>
+          <li><a href="#">Letter generator</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="learn.html">Overview</a></li>
+          <li><a href="learn-foundations.html">Foundations</a></li>
+          <li><a href="learn-filtration-ventilation.html">Filtration &amp; Ventilation</a></li>
+          <li><a href="learn-germicidal-uv.html">Germicidal UV</a></li>
+          <li><a href="learn-monitoring.html">Monitoring</a></li>
+          <li><a href="learn-readiness.html">Readiness</a></li>
+          <li><a href="timeline.html">The timeline</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Organization</h4>
+        <ul>
+          <li><a href="#">About &amp; sourcing</a></li>
+          <li><a href="shepherd.html">Shepherd</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="#">Partner with us</a></li>
+          <li><a href="#">Donate</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Ellis</span>
+      <span>v0.1 prototype</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

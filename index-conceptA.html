@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ellis — The new gateway to a safer place</title>
+<meta name="description" content="Ellis turns the current science on ventilation, filtration, and germicidal UV into tools you can use today.">
+<link rel="icon" type="image/png" href="assets/flag-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  /* ═══════════════════════════════════════════════
+     Concept A: "Question-First"
+     Hero asks a provocative question. Page scrolls
+     through answer-reveal sections with staggered
+     transitions and accordion-like reveals.
+     ═══════════════════════════════════════════════ */
+  
+  .qa-hero{
+    min-height:80vh;
+    display:flex;align-items:center;justify-content:center;
+    padding:80px 32px;
+    background:var(--white);
+    position:relative;
+    overflow:hidden;
+  }
+  .qa-hero::before{
+    content:'';
+    position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse 50% 40% at 30% 50%, var(--uv-soft) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 80% 30%, rgba(61,107,138,0.05) 0%, transparent 50%);
+    pointer-events:none;
+  }
+  .qa-hero-content{
+    position:relative;z-index:1;
+    text-align:center;
+    max-width:800px;
+    margin:0 auto;
+  }
+  .qa-hero-content .qa-kicker{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;letter-spacing:0.2em;text-transform:uppercase;
+    color:var(--uv);margin:0 0 32px;
+  }
+  .qa-hero-content .qa-big-q{
+    font-family:'Source Serif 4', serif;
+    font-weight:400;font-size:72px;line-height:1;
+    color:var(--uv);margin:0 0 16px;letter-spacing:-0.04em;
+    opacity:0.35;
+  }
+  .qa-hero-content h1{
+    font-family:'Source Serif 4', serif;
+    font-weight:400;font-size:48px;line-height:1.1;
+    color:var(--ink);margin:0 0 24px;
+    letter-spacing:-0.025em;
+    max-width:700px;margin-left:auto;margin-right:auto;
+  }
+  .qa-hero-content h1 em{
+    font-style:italic;font-weight:600;color:var(--uv);
+  }
+  .qa-hero-content .qa-lede{
+    font-size:17px;color:var(--ink-soft);
+    max-width:520px;margin:0 auto 36px;
+    line-height:1.6;
+  }
+  .qa-scroll-hint{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+    color:var(--ink-soft);opacity:0.5;
+    display:flex;flex-direction:column;align-items:center;gap:10px;
+  }
+  .qa-scroll-hint .line{
+    width:1px;height:32px;background:var(--line);
+  }
+
+  /* Answer cards — staggered */
+  .qa-answers{
+    background:var(--paper);
+    padding:0;
+  }
+  .qa-answer-block{
+    padding:96px 32px;
+    border-bottom:1px solid var(--line);
+    background:var(--white);
+    position:relative;
+  }
+  .qa-answer-block:nth-child(even){
+    background:var(--paper);
+  }
+  .qa-answer-block:last-child{border-bottom:none;}
+  .qa-answer-inner{
+    max-width:720px;margin:0 auto;
+    padding-left:56px;
+    position:relative;
+  }
+  .qa-answer-inner::before{
+    content:counter(qa-num);
+    counter-increment:qa-num;
+    position:absolute;left:0;top:0;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;font-weight:500;
+    color:var(--uv);letter-spacing:0.04em;
+  }
+  .qa-answers{counter-reset:qa-num 0;}
+  .qa-answer-inner .qa-answer-eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
+    color:var(--uv);margin:0 0 12px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .qa-answer-inner .qa-answer-eyebrow::before{
+    content:'';width:16px;height:1.5px;background:var(--uv);
+  }
+  .qa-answer-inner h2{
+    font-family:'Source Serif 4', serif;
+    font-weight:500;font-size:32px;margin:0 0 16px;
+    letter-spacing:-0.01em;color:var(--ink);
+    line-height:1.15;
+  }
+  .qa-answer-inner p{
+    font-size:16px;color:var(--ink-soft);
+    line-height:1.65;margin:0 0 16px;
+  }
+  .qa-answer-inner p:last-child{margin-bottom:0;}
+  .qa-answer-inner .qa-cta{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:14px;font-weight:500;color:var(--uv);
+    text-decoration:none;margin-top:20px;
+    border-bottom:1px solid var(--uv);padding-bottom:2px;
+  }
+  .qa-answer-inner .qa-cta:hover{color:var(--ink);border-bottom-color:var(--ink);}
+
+  /* Closing */
+  .qa-close{
+    padding:80px 32px;
+    background:var(--ink);
+    text-align:center;
+  }
+  .qa-close-inner{max-width:600px;margin:0 auto;}
+  .qa-close h2{
+    font-family:'Source Serif 4', serif;
+    font-weight:500;font-size:36px;
+    color:var(--paper);margin:0 0 14px;
+    letter-spacing:-0.01em;
+  }
+  .qa-close p{
+    font-size:15px;color:rgba(242,243,240,0.7);
+    margin:0 0 28px;line-height:1.55;
+  }
+  .qa-close .qa-btn{
+    background:var(--paper);color:var(--ink);
+    border:none;font-size:14px;font-weight:500;
+    padding:14px 28px;text-decoration:none;
+    border-radius:4px;display:inline-block;
+    font-family:inherit;
+  }
+  .qa-close .qa-btn:hover{background:var(--white);}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="brand">
+    <img src="assets/flag-logo.png" alt="" width="54" height="44">
+    <span class="brand-text">
+      <span class="brand-line1">ellis</span>
+      <span class="brand-line2">biosecurity network</span>
+    </span>
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li class="has-dropdown">
+        <a href="about-mission.html" class="nav-trigger">About</a>
+        <div class="dropdown-panel" role="menu">
+          <a href="about-mission.html">Mission</a>
+          <a href="about-team.html">Team</a>
+        </div>
+      </li>
+      <li class="has-dropdown">
+        <a href="learn.html" class="nav-trigger">Learn</a>
+        <div class="dropdown-panel" role="menu">
+          <a href="learn.html">Overview</a>
+          <a href="learn-foundations.html">Foundations</a>
+          <a href="learn-filtration-ventilation.html">Filtration &amp; Ventilation</a>
+          <a href="learn-germicidal-uv.html">Germicidal UV</a>
+          <a href="learn-monitoring.html">Monitoring</a>
+          <a href="learn-readiness.html">Readiness</a>
+        </div>
+      </li>
+      <li class="has-dropdown">
+        <a href="tools.html" class="nav-trigger">Tools</a>
+        <div class="dropdown-panel" role="menu">
+          <a href="building-scorecard.html">Building Scorecard</a>
+          <a href="guv-deployment-engine.html">GUV Deployment Engine</a>
+          <a href="map.html">Surveillance Map</a>
+        </div>
+      </li>
+      <li><a href="shepherd.html">Shepherd</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── Question hero ── -->
+<section class="qa-hero">
+  <div class="qa-hero-content">
+    <p class="qa-kicker">Ellis &middot; biosecurity network</p>
+    <p class="qa-big-q">?</p>
+    <h1>What if the air in your building <em>had a score?</em></h1>
+    <p class="qa-lede">Not a guess. Not a sales pitch. A defensible number you can take to a facilities manager, a school board, or a budget meeting.</p>
+    <div class="qa-scroll-hint">
+      <span>Scroll for answers</span>
+      <div class="line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Answers ── -->
+<section class="qa-answers">
+  <div class="qa-answer-block">
+    <div class="qa-answer-inner">
+      <p class="qa-answer-eyebrow">The science exists</p>
+      <h2>We already know how to make indoor air safer.</h2>
+      <p>Filtration, ventilation, germicidal UV — the engineering is proven. The gap isn't knowledge. It's access. Most buildings have never been assessed because the tools to do it are locked inside HVAC textbooks and six-figure consulting engagements.</p>
+      <p>So we built the tools ourselves. They're free. They take thirty minutes. And they give you a score that means something.</p>
+      <a href="learn.html" class="qa-cta">See how it works &rarr;</a>
+    </div>
+  </div>
+  <div class="qa-answer-block">
+    <div class="qa-answer-inner">
+      <p class="qa-answer-eyebrow">The tools are real</p>
+      <h2>Score. Plan. Monitor. In that order.</h2>
+      <p>Start with the Building Scorecard — a self-assessment that walks through every factor that matters. Then use the GUV Deployment Engine to plan an intervention. Then track what's circulating with the Surveillance Map.</p>
+      <p>Each tool feeds into the next. You don't need to be an engineer to use them.</p>
+      <a href="tools.html" class="qa-cta">Explore the tools &rarr;</a>
+    </div>
+  </div>
+  <div class="qa-answer-block">
+    <div class="qa-answer-inner">
+      <p class="qa-answer-eyebrow">The data is live</p>
+      <h2>8,204 assessments this week alone.</h2>
+      <p>Schools. Offices. Clinics. Community centers. Each one is someone who decided to stop guessing and start measuring. Respiratory activity is moderate nationally, wastewater signals are trending — the map updates every Monday.</p>
+      <p>The question isn't whether your building has a problem. It's whether you know the answer.</p>
+      <a href="map.html" class="qa-cta">Check the map &rarr;</a>
+    </div>
+  </div>
+  <div class="qa-answer-block">
+    <div class="qa-answer-inner">
+      <p class="qa-answer-eyebrow">The next step is yours</p>
+      <h2>A score is only useful if you act on it.</h2>
+      <p>That's why every tool ends with a concrete next step — a letter to a facilities manager, a budget-line item to propose, a conversation starter for the next board meeting. We don't just tell you what's wrong. We help you fix it.</p>
+      <a href="act.html" class="qa-cta">Take action &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Close ── -->
+<section class="qa-close">
+  <div class="qa-close-inner">
+    <h2>Your building has a score.</h2>
+    <p>Find out what it is. No account. No cost. No commitment.</p>
+    <a href="building-scorecard.html" class="qa-btn">Score your building</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-row">
+          <img src="assets/flag-logo.png" alt="" width="30" height="30">
+          <span class="footer-brand-text">
+            <span class="footer-brand-line1">ellis</span>
+            <span class="footer-brand-line2">biosecurity network</span>
+          </span>
+        </div>
+        <p class="footer-tag">Indoor air defense and pandemic preparedness, made actionable. Not a substitute for a licensed HVAC engineer or industrial hygienist.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <ul>
+          <li><a href="building-scorecard.html">Building Scorecard</a></li>
+          <li><a href="guv-deployment-engine.html">GUV Deployment Engine</a></li>
+          <li><a href="map.html">Surveillance Map</a></li>
+          <li><a href="#">Letter generator</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="learn.html">Overview</a></li>
+          <li><a href="learn-foundations.html">Foundations</a></li>
+          <li><a href="learn-filtration-ventilation.html">Filtration &amp; Ventilation</a></li>
+          <li><a href="learn-germicidal-uv.html">Germicidal UV</a></li>
+          <li><a href="learn-monitoring.html">Monitoring</a></li>
+          <li><a href="learn-readiness.html">Readiness</a></li>
+          <li><a href="timeline.html">The timeline</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Organization</h4>
+        <ul>
+          <li><a href="#">About &amp; sourcing</a></li>
+          <li><a href="shepherd.html">Shepherd</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="#">Partner with us</a></li>
+          <li><a href="#">Donate</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Ellis</span>
+      <span>v0.1 prototype</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

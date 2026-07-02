@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ellis — The new gateway to a safer place</title>
+<meta name="description" content="Ellis turns the current science on ventilation, filtration, and germicidal UV into tools you can use today.">
+<link rel="icon" type="image/png" href="assets/flag-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  /* ─────────────────────────────────────────────
+     Option 3: Tool-first / Action-oriented
+     Minimal hero, bold CTA ribbon, tool cards
+     as primary content, dark action footer.
+     ───────────────────────────────────────────── */
+
+  .opt3-hero{
+    padding:0;
+    background:var(--white);
+    position:relative;
+  }
+  .opt3-hero-inner{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    max-width:1180px;margin:0 auto;
+  }
+  @media (max-width:820px){.opt3-hero-inner{grid-template-columns:1fr;}}
+  .opt3-hero-text{
+    padding:72px 48px 72px 32px;
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  .opt3-hero-text .kicker{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;letter-spacing:0.14em;text-transform:uppercase;
+    color:var(--uv);margin:0 0 16px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .opt3-hero-text .kicker::before{
+    content:'';width:16px;height:2px;background:var(--uv);
+  }
+  .opt3-hero-text h1{
+    font-family:'Source Serif 4', serif;
+    font-weight:500;font-size:46px;line-height:1.04;
+    color:var(--ink);margin:0 0 14px;
+    letter-spacing:-0.02em;
+  }
+  .opt3-hero-text h1 em{
+    font-style:italic;font-weight:600;color:var(--uv);
+  }
+  .opt3-hero-text .lede{
+    font-size:15px;color:var(--ink-soft);
+    line-height:1.55;margin:0 0 28px;
+    max-width:420px;
+  }
+  .opt3-hero-text .btn{
+    align-self:flex-start;
+    font-size:14px;padding:14px 28px;
+    border-radius:4px;
+  }
+  .opt3-hero-visual{
+    background:var(--uv-soft);
+    padding:72px 32px;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .opt3-hero-visual::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:radial-gradient(ellipse at 50% 50%, rgba(61,107,138,0.12) 0%, transparent 60%);
+  }
+  .opt3-hero-visual .visual-content{
+    position:relative;z-index:1;
+    text-align:center;
+  }
+  .opt3-hero-visual .big-mark{
+    width:100px;height:100px;
+    background:var(--ink);
+    border-radius:50%;
+    display:inline-flex;align-items:center;justify-content:center;
+    margin-bottom:20px;
+    box-shadow:0 8px 32px rgba(28,41,51,0.15);
+  }
+  .opt3-hero-visual .big-mark svg{width:38px;height:38px;display:block;}
+  .opt3-hero-visual .vis-stat{
+    font-family:'Source Serif 4', serif;
+    font-size:44px;font-weight:500;color:var(--ink);
+    letter-spacing:-0.02em;margin:0 0 4px;
+  }
+  .opt3-hero-visual .vis-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+    color:var(--ink-soft);margin:0;
+  }
+
+  /* CTA ribbon — full width dark band */
+  .opt3-ribbon{
+    background:var(--ink);
+    padding:24px 32px;
+    border-bottom:1px solid rgba(242,243,240,0.08);
+  }
+  .opt3-ribbon-inner{
+    max-width:1180px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:16px;flex-wrap:wrap;
+  }
+  .opt3-ribbon p{
+    font-size:14px;color:rgba(242,243,240,0.85);
+    margin:0;font-weight:400;
+  }
+  .opt3-ribbon p strong{color:var(--paper);font-weight:500;}
+  .opt3-ribbon .ribbon-cta{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;font-weight:500;text-transform:uppercase;
+    letter-spacing:0.06em;
+    background:var(--paper);color:var(--ink);
+    padding:10px 20px;text-decoration:none;border-radius:3px;
+    transition:background .2s;
+  }
+  .opt3-ribbon .ribbon-cta:hover{background:var(--white);}
+
+  /* Tool cards — big, bold, primary */
+  .opt3-tools{
+    padding:72px 32px;
+    background:var(--paper);
+  }
+  .opt3-tools-head{
+    margin-bottom:32px;
+  }
+  .opt3-tools-head h2{
+    font-family:'Source Serif 4', serif;
+    font-size:28px;font-weight:500;margin:0 0 6px;
+    letter-spacing:-0.01em;
+  }
+  .opt3-tools-head p{
+    font-size:14px;color:var(--ink-soft);margin:0;
+  }
+  .opt3-tool-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:16px;
+  }
+  @media (max-width:820px){.opt3-tool-grid{grid-template-columns:1fr;}}
+  .opt3-tool-card{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:32px 28px;
+    text-decoration:none;color:var(--ink);
+    display:flex;flex-direction:column;
+    position:relative;
+    overflow:hidden;
+    transition:box-shadow .2s, transform .2s;
+  }
+  .opt3-tool-card::before{
+    content:'';
+    position:absolute;
+    top:0;left:0;right:0;
+    height:4px;
+    background:var(--uv);
+  }
+  .opt3-tool-card:nth-child(2)::before{background:var(--sage);}
+  .opt3-tool-card:nth-child(3)::before{background:var(--amber);}
+  .opt3-tool-card:hover{
+    box-shadow:0 8px 28px var(--uv-glow);
+    transform:translateY(-3px);
+  }
+  .opt3-tool-card .tc-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+    color:var(--uv);margin:0 0 12px;
+  }
+  .opt3-tool-card:nth-child(2) .tc-label{color:var(--sage);}
+  .opt3-tool-card:nth-child(3) .tc-label{color:var(--amber);}
+  .opt3-tool-card h3{
+    font-family:'Source Serif 4', serif;
+    font-size:20px;font-weight:500;margin:0 0 10px;
+  }
+  .opt3-tool-card p{
+    font-size:13px;color:var(--ink-soft);
+    margin:0 0 18px;line-height:1.5;flex-grow:1;
+  }
+  .opt3-tool-card .tc-action{
+    font-size:13px;font-weight:500;color:var(--uv);
+    display:flex;align-items:center;gap:6px;
+    font-family:'IBM Plex Sans', sans-serif;
+  }
+  .opt3-tool-card .tc-action .arrow{
+    transition:transform .2s;
+  }
+  .opt3-tool-card:hover .tc-action .arrow{
+    transform:translateX(4px);
+  }
+
+  /* Quick links — smaller, secondary */
+  .opt3-links{
+    padding:56px 32px;
+    background:var(--white);
+  }
+  .opt3-links-inner{
+    max-width:1180px;margin:0 auto;
+  }
+  .opt3-links-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:16px;
+  }
+  @media (max-width:600px){.opt3-links-grid{grid-template-columns:1fr 1fr;}}
+  .opt3-link-card{
+    padding:20px 24px;
+    border:1px solid var(--line);
+    border-radius:4px;
+    text-decoration:none;color:var(--ink);
+    display:flex;align-items:center;justify-content:space-between;
+    transition:background .15s, border-color .15s;
+  }
+  .opt3-link-card:hover{
+    background:var(--uv-soft);
+    border-color:var(--uv);
+  }
+  .opt3-link-card .lc-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+    color:var(--ink-soft);margin:0 0 2px;
+  }
+  .opt3-link-card .lc-title{
+    font-size:15px;font-weight:500;margin:0;
+  }
+  .opt3-link-card .lc-arrow{
+    font-size:16px;color:var(--line);
+  }
+  .opt3-link-card:hover .lc-arrow{color:var(--uv);}
+
+  /* Call to action — dark section */
+  .opt3-act{
+    background:var(--ink);
+    padding:64px 32px;
+    text-align:center;
+  }
+  .opt3-act-inner{
+    max-width:600px;margin:0 auto;
+  }
+  .opt3-act h2{
+    font-family:'Source Serif 4', serif;
+    font-size:32px;font-weight:500;
+    color:var(--paper);margin:0 0 12px;
+    letter-spacing:-0.01em;
+  }
+  .opt3-act p{
+    font-size:15px;color:rgba(242,243,240,0.7);
+    margin:0 0 28px;line-height:1.55;
+  }
+  .opt3-act .act-btn-group{
+    display:flex;gap:12px;justify-content:center;flex-wrap:wrap;
+  }
+  .opt3-act .btn-primary{
+    background:var(--paper);color:var(--ink);
+    border:1px solid var(--paper);
+    font-size:14px;font-weight:500;padding:14px 24px;
+    text-decoration:none;border-radius:4px;
+    transition:background .2s;
+    font-family:inherit;
+  }
+  .opt3-act .btn-primary:hover{background:var(--white);}
+  .opt3-act .btn-outline{
+    background:transparent;color:var(--paper);
+    border:1px solid rgba(242,243,240,0.4);
+    font-size:14px;font-weight:500;padding:14px 24px;
+    text-decoration:none;border-radius:4px;
+    transition:border-color .2s;
+    font-family:inherit;
+  }
+  .opt3-act .btn-outline:hover{border-color:var(--paper);}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="brand">
+    <img src="assets/flag-logo.png" alt="" width="54" height="44">
+    <span class="brand-text">
+      <span class="brand-line1">ellis</span>
+      <span class="brand-line2">biosecurity network</span>
+    </span>
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li class="has-dropdown">
+        <a href="about-mission.html" class="nav-trigger">About</a>
+        <div class="dropdown-panel" role="menu">
+          <a href="about-mission.html">Mission</a>
+          <a href="about-team.html">Team</a>
+        </div>
+      </li>
+      <li class="has-dropdown">
+        <a href="learn.html" class="nav-trigger">Learn</a>
+        <div class="dropdown-panel" role="menu">
+          <a href="learn.html">Overview</a>
+          <a href="learn-foundations.html">Foundations</a>
+          <a href="learn-filtration-ventilation.html">Filtration &amp; Ventilation</a>
+          <a href="learn-germicidal-uv.html">Germicidal UV</a>
+          <a href="learn-monitoring.html">Monitoring</a>
+          <a href="learn-readiness.html">Readiness</a>
+        </div>
+      </li>
+      <li class="has-dropdown">
+        <a href="tools.html" class="nav-trigger">Tools</a>
+        <div class="dropdown-panel" role="menu">
+          <a href="building-scorecard.html">Building Scorecard</a>
+          <a href="guv-deployment-engine.html">GUV Deployment Engine</a>
+          <a href="map.html">Surveillance Map</a>
+        </div>
+      </li>
+      <li><a href="shepherd.html">Shepherd</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── Hero: split layout ── -->
+<section class="opt3-hero">
+  <div class="opt3-hero-inner">
+    <div class="opt3-hero-text">
+      <p class="kicker">Ellis biosecurity network</p>
+      <h1>Stop guessing. <em>Start scoring.</em></h1>
+      <p class="lede">Self-assess any shared space against current airborne transmission standards. Get a number. Get a plan. Get moving.</p>
+      <a href="building-scorecard.html" class="btn">Score your building</a>
+    </div>
+    <div class="opt3-hero-visual">
+      <div class="visual-content">
+        <div class="big-mark">
+          <svg viewBox="0 0 26 26" fill="none">
+            <path d="M10 8L18 13L10 18V8Z" fill="#F2F3F0"/>
+          </svg>
+        </div>
+        <p class="vis-stat">8,204</p>
+        <p class="vis-label">assessments completed this week</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Ribbon ── -->
+<div class="opt3-ribbon">
+  <div class="opt3-ribbon-inner">
+    <p><strong>Respiratory activity: Moderate</strong> &middot; CDC ILINet week of Jun 15 &nbsp;&middot;&nbsp; Wastewater: +12% vs last week</p>
+    <a href="map.html" class="ribbon-cta">View surveillance map &rarr;</a>
+  </div>
+</div>
+
+<!-- ── Tool cards ── -->
+<section class="opt3-tools">
+  <div class="wrap">
+    <div class="opt3-tools-head">
+      <p class="section-eyebrow">Start here</p>
+      <h2>Choose your tool</h2>
+      <p>Each one turns science into a concrete next step.</p>
+    </div>
+    <div class="opt3-tool-grid">
+      <a href="building-scorecard.html" class="opt3-tool-card">
+        <p class="tc-label">Building Scorecard</p>
+        <h3>Rate your building's air</h3>
+        <p>Walk through each factor — ventilation, filtration, occupancy, risk — and get a defensible score you can take to a decision-maker.</p>
+        <span class="tc-action">Open scorecard <span class="arrow">&rarr;</span></span>
+      </a>
+      <a href="guv-deployment-engine.html" class="opt3-tool-card">
+        <p class="tc-label">GUV Deployment Engine</p>
+        <h3>Plan your UV installation</h3>
+        <p>Room dimensions, ceiling height, fixture specs — get a layout recommendation and fixture count for germicidal UV upper-air.</p>
+        <span class="tc-action">Plan deployment <span class="arrow">&rarr;</span></span>
+      </a>
+      <a href="map.html" class="opt3-tool-card">
+        <p class="tc-label">Surveillance Map</p>
+        <h3>See what's circulating</h3>
+        <p>Weekly wastewater and respiratory illness signals for the US and globally. Updated every Monday from public data sources.</p>
+        <span class="tc-action">Open the map <span class="arrow">&rarr;</span></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Quick links ── -->
+<section class="opt3-links">
+  <div class="opt3-links-inner">
+    <div class="opt3-links-grid">
+      <a href="learn.html" class="opt3-link-card">
+        <div>
+          <p class="lc-label">Learn</p>
+          <p class="lc-title">The science behind it</p>
+        </div>
+        <span class="lc-arrow">&rarr;</span>
+      </a>
+      <a href="shepherd.html" class="opt3-link-card">
+        <div>
+          <p class="lc-label">Shepherd</p>
+          <p class="lc-title">Weekly dispatch</p>
+        </div>
+        <span class="lc-arrow">&rarr;</span>
+      </a>
+      <a href="timeline.html" class="opt3-link-card">
+        <div>
+          <p class="lc-label">Timeline</p>
+          <p class="lc-title">History of biodefense</p>
+        </div>
+        <span class="lc-arrow">&rarr;</span>
+      </a>
+      <a href="act.html" class="opt3-link-card">
+        <div>
+          <p class="lc-label">Act</p>
+          <p class="lc-title">Turn scores into action</p>
+        </div>
+        <span class="lc-arrow">&rarr;</span>
+      </a>
+      <a href="about-mission.html" class="opt3-link-card">
+        <div>
+          <p class="lc-label">About</p>
+          <p class="lc-title">Our mission &amp; team</p>
+        </div>
+        <span class="lc-arrow">&rarr;</span>
+      </a>
+      <a href="contact.html" class="opt3-link-card">
+        <div>
+          <p class="lc-label">Contact</p>
+          <p class="lc-title">Get in touch</p>
+        </div>
+        <span class="lc-arrow">&rarr;</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Dark action section ── -->
+<section class="opt3-act">
+  <div class="opt3-act-inner">
+    <h2>Not sure where to start?</h2>
+    <p>Take the Building Scorecard first — it's the fastest way to understand your space and what it needs. No account required, no cost, no commitments.</p>
+    <div class="act-btn-group">
+      <a href="building-scorecard.html" class="btn-primary">Score your building</a>
+      <a href="learn.html" class="btn-outline">Read the foundations</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-row">
+          <img src="assets/flag-logo.png" alt="" width="30" height="30">
+          <span class="footer-brand-text">
+            <span class="footer-brand-line1">ellis</span>
+            <span class="footer-brand-line2">biosecurity network</span>
+          </span>
+        </div>
+        <p class="footer-tag">Indoor air defense and pandemic preparedness, made actionable. Not a substitute for a licensed HVAC engineer or industrial hygienist.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <ul>
+          <li><a href="building-scorecard.html">Building Scorecard</a></li>
+          <li><a href="guv-deployment-engine.html">GUV Deployment Engine</a></li>
+          <li><a href="map.html">Surveillance Map</a></li>
+          <li><a href="#">Letter generator</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="learn.html">Overview</a></li>
+          <li><a href="learn-foundations.html">Foundations</a></li>
+          <li><a href="learn-filtration-ventilation.html">Filtration &amp; Ventilation</a></li>
+          <li><a href="learn-germicidal-uv.html">Germicidal UV</a></li>
+          <li><a href="learn-monitoring.html">Monitoring</a></li>
+          <li><a href="learn-readiness.html">Readiness</a></li>
+          <li><a href="timeline.html">The timeline</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Organization</h4>
+        <ul>
+          <li><a href="#">About &amp; sourcing</a></li>
+          <li><a href="shepherd.html">Shepherd</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="#">Partner with us</a></li>
+          <li><a href="#">Donate</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Ellis</span>
+      <span>v0.1 prototype</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

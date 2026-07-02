@@ -71,12 +71,42 @@
   }
   .week-all-btn.on{background:var(--ink);color:var(--paper);border-color:var(--ink);}
 
+  .range-slider{
+    position:relative;flex:1;min-width:160px;max-width:360px;height:36px;cursor:pointer;
+    user-select:none;-webkit-user-select:none;
+  }
+  .range-track{
+    position:absolute;left:0;right:0;top:6px;height:4px;
+    background:var(--line);border-radius:2px;
+  }
+  .range-fill{
+    position:absolute;left:0;right:0;top:6px;height:4px;
+    background:var(--uv);border-radius:2px;
+  }
+  .range-handle{
+    position:absolute;top:0;width:16px;height:16px;margin-left:-8px;
+    border-radius:50%;background:var(--uv);border:2px solid var(--white);
+    cursor:grab;z-index:2;box-shadow:0 1px 4px rgba(0,0,0,0.22);
+    transition:box-shadow .15s;
+  }
+  .range-handle:active,.range-handle.dragging{cursor:grabbing;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+  .range-handle#rangeHandleFrom{z-index:3;}
+  .range-handle#rangeHandleTo{z-index:2;}
+  .range-labels{
+    position:absolute;left:0;right:0;top:22px;display:flex;
+    justify-content:space-between;font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;color:var(--ink-soft);pointer-events:none;
+  }
+
   .map-wrap{position:relative;background:var(--white);border-bottom:1px solid var(--line);}
   #map{width:100%;height:560px;display:block;}
   .map-svg{width:100%;height:100%;display:block;background:var(--paper-deep);}
-  .map-cell{stroke:var(--white);stroke-width:0.5;cursor:pointer;transition:fill .12s;}
-  .map-cell:hover{stroke:var(--ink);stroke-width:1.2;}
-  .map-empty{stroke:var(--line);fill:var(--paper);}
+  .map-cell{stroke:none;cursor:pointer;transition:fill .12s;}
+  .map-cell:hover{filter:brightness(0.92) saturate(1.05);}
+  .map-empty{stroke:none;fill:var(--paper);}
+  .mesh{fill:none;stroke:var(--white);stroke-width:0.7;pointer-events:none;stroke-linejoin:round;stroke-linecap:round;}
+  .mesh-hover{fill:none;stroke:var(--ink);stroke-width:1.4;pointer-events:none;stroke-linejoin:round;stroke-linecap:round;opacity:0;transition:opacity .1s;}
+  .mesh-hover.show{opacity:1;}
 
   .legend{
     position:absolute;left:32px;bottom:24px;background:var(--white);
@@ -98,6 +128,11 @@
   .tooltip .tt-row{display:flex;justify-content:space-between;gap:14px;font-family:'IBM Plex Mono', monospace;font-size:11px;}
   .tooltip .tt-row span:first-child{color:#B8C4CB;}
   .tooltip .tt-row .tt-val{color:#fff;text-align:right;}
+  .tooltip .tt-badge{display:inline-block;font-size:10px;padding:1px 8px;border-radius:2px;letter-spacing:0.05em;font-weight:500;line-height:1.7;}
+  .tooltip .tt-badge.low{background:#2a5a3a;color:#b8e6c0;}
+  .tooltip .tt-badge.moderate{background:#5a4a1a;color:#e6d48a;}
+  .tooltip .tt-badge.high{background:#5a2a1a;color:#e6a88a;}
+  .tooltip .tt-badge.very-high{background:#4a1515;color:#e88888;}
 
   .feed-status{
     padding:20px 32px;background:var(--paper);border-bottom:1px solid var(--line);
@@ -179,20 +214,22 @@
         <button data-disease="rsv">RSV</button>
       </div>
     </div>
-    <div class="control-group">
-      <span class="control-label">Scale</span>
-      <div class="seg" id="scaleSeg" role="tablist">
-        <button data-scale="linear" class="on">Linear</button>
-        <button data-scale="log">Log</button>
-      </div>
-    </div>
   </div>
 
   <div class="week-control">
-    <label for="weekSlider">MMWR Week</label>
-    <input type="range" id="weekSlider" class="week-slider" min="0" max="54" value="0">
-    <span class="week-value" id="weekValue">All Weeks (YTD)</span>
-    <button id="weekAllBtn" class="week-all-btn on">YTD Total</button>
+    <label title="MMWR weeks are the CDC's standard way of grouping weeks for disease tracking. Each week runs Sunday to Saturday. Week 1 starts in early January.">MMWR Weeks</label>
+    <div class="range-slider" id="rangeSlider">
+      <div class="range-track"></div>
+      <div class="range-fill" id="rangeFill"></div>
+      <div class="range-handle" id="rangeHandleFrom"></div>
+      <div class="range-handle" id="rangeHandleTo"></div>
+      <div class="range-labels">
+        <span id="weekFromLabel">Wk&nbsp;1</span>
+        <span id="weekToLabel">Wk&nbsp;1</span>
+      </div>
+    </div>
+    <span class="week-value" id="weekValue">Year-to-date</span>
+    <button id="weekAllBtn" class="week-all-btn on">YTD</button>
   </div>
 
   <div class="map-wrap">
@@ -213,7 +250,7 @@
     <div class="news-list" id="whoNews"><div class="news-row"><span class="nr-date">&mdash;</span><p class="nr-title" style="color:var(--ink-soft);">Loading&hellip;</p><span class="nr-country"></span></div></div>
   </section>
 
-  <section class="section-pad" style="padding-top:32px;">
+  <section class="section-pad section-wide" style="padding-top:32px;">
     <div class="section-head">
       <p class="section-eyebrow">About this data</p>
       <h2>Sourcing and limits.</h2>
@@ -287,23 +324,35 @@
   const PALETTE = ['#E3EAEE','#B7CDD9','#7FA4BB','#4F7F9C','#3D6B8A','#2E5573'];
 
   let DATA = null, US_TOPO = null, WORLD_TOPO = null;
-  let layer = 'us', disease = 'covid-19', scaleKind = 'linear';
-  let selectedWeek = 0; // 0 = all weeks, 1-54 = specific week
+  let layer = 'us', disease = 'covid-19';
+  let weekFrom = 1, weekTo = 1; // inclusive week range (1-based)
+  let maxWeek = 54;
 
   const $map = document.getElementById('map');
   const $tip = document.getElementById('tip');
   const $legend = document.getElementById('legend');
-  const $weekSlider = document.getElementById('weekSlider');
+  const $rangeSlider = document.getElementById('rangeSlider');
+  const $rangeTrack = document.querySelector('.range-track');
+  const $rangeFill = document.getElementById('rangeFill');
+  const $handleFrom = document.getElementById('rangeHandleFrom');
+  const $handleTo = document.getElementById('rangeHandleTo');
+  const $weekFromLabel = document.getElementById('weekFromLabel');
+  const $weekToLabel = document.getElementById('weekToLabel');
   const $weekValue = document.getElementById('weekValue');
   const $weekAllBtn = document.getElementById('weekAllBtn');
 
   function loadAll(){
     try {
       DATA = EMBEDDED_SURVEILLANCE;
-      // Cap week slider to current week (no fake future data)
-      if (DATA.metadata) $weekSlider.max = DATA.metadata.current_week;
+      // Cap week sliders to current week (no fake future data)
+      var cw = 54;
+      if (DATA.metadata) cw = DATA.metadata.current_week || 54;
+      maxWeek = cw;
+      weekFrom = 1;
+      weekTo = cw;
       US_TOPO = EMBEDDED_US_TOPO;
       WORLD_TOPO = EMBEDDED_WORLD_TOPO;
+      updateSliderUI();
       const feeds = (DATA.feeds || []);
       const anyFailed = feeds.some(f => !f.ok);
       const pill = document.getElementById('feedStatusPill');
@@ -316,7 +365,7 @@
       else { pill.className = 'feed-pill stale'; text.textContent = 'Using seed data'; }
       renderWhoNews();
       render();
-    } catch (e) {
+  } catch (e) {
       document.getElementById('feedStatusText').textContent = 'Failed to load data';
       document.getElementById('feedStatusPill').className = 'feed-pill failed';
     }
@@ -339,18 +388,29 @@
   }
 
   // ---- Data access ----
-  function getDiseaseValue(record, dis, week) {
+  function getDiseaseValue(record, dis, wFrom, wTo) {
     if (!record || !record.by_disease) return null;
     const d = record.by_disease[dis];
     if (!d) return null;
-    if (week > 0 && d.by_week && d.by_week[week] !== undefined) return d.by_week[week];
-    return d.total || null;
+    // When wFrom === wTo, return single week (or fall back to total)
+    if (wFrom === wTo && d.by_week && d.by_week[wFrom] !== undefined) return d.by_week[wFrom];
+    // Range: average across weeks (skip gaps)
+    if (d.by_week) {
+      var sum = 0, count = 0;
+      for (var w = wFrom; w <= wTo; w++) {
+        if (d.by_week[w] !== undefined) { sum += d.by_week[w]; count++; }
+      }
+      if (count > 0) return sum / count;
+    }
+    // Fallback: if range covers the whole season or no weekly data, use total
+    if (wFrom === 1 && d.total !== undefined) return d.total;
+    return null;
   }
 
-  function getStateValue(name, dis, week) {
+  function getStateValue(name, dis, wFrom, wTo) {
     if (!name) return null;
     const key = name.toLowerCase().replace(/\s+/g,'-');
-    return getDiseaseValue(DATA.us_states && DATA.us_states[key], dis, week);
+    return getDiseaseValue(DATA.us_states && DATA.us_states[key], dis, wFrom, wTo);
   }
 
   function getStateRecord(name) {
@@ -379,11 +439,11 @@
 
   function collectValuesUS() {
     const features = topojson.feature(US_TOPO, US_TOPO.objects.states).features;
-    return features.map(f => getStateValue(f.properties.name, disease, selectedWeek)).filter(v => v != null);
+    return features.map(f => getStateValue(f.properties.name, disease, weekFrom, weekTo)).filter(v => v != null);
   }
 
   function collectValuesWorld() {
-    return Object.values(DATA.countries || {}).map(c => getDiseaseValue(c, disease, selectedWeek)).filter(v => v != null);
+    return Object.values(DATA.countries || {}).map(c => getDiseaseValue(c, disease, weekFrom, weekTo)).filter(v => v != null);
   }
 
   function renderUS(svg, w, h){
@@ -393,19 +453,36 @@
     const path = d3.geoPath(projection);
     const scale = colorScale(values);
 
-    svg.append('g').selectAll('path')
+    // Fill layer — no strokes, clean fill only
+    var g = svg.append('g');
+    g.selectAll('path')
       .data(features)
       .join('path')
       .attr('class', function(d) {
-        return getStateValue(d.properties.name, disease, selectedWeek) == null ? 'map-cell map-empty' : 'map-cell';
+        return getStateValue(d.properties.name, disease, weekFrom, weekTo) == null ? 'map-cell map-empty' : 'map-cell';
       })
       .attr('d', path)
       .attr('fill', function(d) {
-        var v = getStateValue(d.properties.name, disease, selectedWeek);
+        var v = getStateValue(d.properties.name, disease, weekFrom, weekTo);
         return v == null ? '#E6E8E2' : scale(v);
       })
       .on('mousemove', function(event, d) { showTip(event, d.properties.name, 'us'); })
       .on('mouseleave', hideTip);
+
+    // Border mesh — single clean strokes between states
+    var meshData = topojson.mesh(US_TOPO, US_TOPO.objects.states, function(a, b) { return a !== b; });
+    svg.append('path').datum(meshData).attr('d', path).attr('class', 'mesh');
+
+    // Hover highlight path — redraws on mousemove for the hovered state only
+    var hoverPath = svg.append('path').attr('class', 'mesh-hover');
+    g.selectAll('path').on('mousemove', function(event, d) {
+      hoverPath.datum(d).attr('d', path).attr('class', 'mesh-hover show');
+      showTip(event, d.properties.name, 'us');
+    });
+    g.selectAll('path').on('mouseleave', function() {
+      hoverPath.attr('class', 'mesh-hover');
+      hideTip();
+    });
   }
 
   function renderWorld(svg, w, h){
@@ -414,42 +491,85 @@
     const path = d3.geoPath(projection);
     const scale = colorScale(collectValuesWorld());
 
-    svg.append('g').selectAll('path')
+    var g = svg.append('g');
+    g.selectAll('path')
       .data(features)
       .join('path')
       .attr('class', function(d) {
-        return getDiseaseValue(DATA.countries && DATA.countries[d.id], disease, selectedWeek) != null
+        return getDiseaseValue(DATA.countries && DATA.countries[d.id], disease, weekFrom, weekTo) != null
           ? 'map-cell' : 'map-cell map-empty';
       })
       .attr('d', path)
       .attr('fill', function(d) {
         var c = DATA.countries && DATA.countries[d.id];
-        var v = c ? getDiseaseValue(c, disease, selectedWeek) : null;
+        var v = c ? getDiseaseValue(c, disease, weekFrom, weekTo) : null;
         return v == null ? '#E6E8E2' : scale(v);
       })
       .on('mousemove', function(event, d) { showTip(event, d.id, 'world'); })
       .on('mouseleave', hideTip);
+
+    // Border mesh for countries
+    var meshData = topojson.mesh(WORLD_TOPO, WORLD_TOPO.objects.countries, function(a, b) { return a !== b; });
+    svg.append('path').datum(meshData).attr('d', path).attr('class', 'mesh');
+
+    // Hover highlight path
+    var hoverPath = svg.append('path').attr('class', 'mesh-hover');
+    g.selectAll('path').on('mousemove', function(event, d) {
+      hoverPath.datum(d).attr('d', path).attr('class', 'mesh-hover show');
+      showTip(event, d.id, 'world');
+    });
+    g.selectAll('path').on('mouseleave', function() {
+      hoverPath.attr('class', 'mesh-hover');
+      hideTip();
+    });
+
+    // Overlay: no data message centered on the map
+    svg.append('rect')
+      .attr('x', w * 0.15).attr('y', h * 0.38)
+      .attr('width', w * 0.7).attr('height', h * 0.28)
+      .attr('rx', 4).attr('fill', 'rgba(255,255,255,0.9)')
+      .attr('stroke', 'var(--line)').attr('stroke-width', 1);
+    svg.append('text')
+      .attr('x', w / 2).attr('y', h * 0.46)
+      .attr('text-anchor', 'middle').attr('fill', 'var(--ink)')
+      .style('font-family', "'Source Serif 4', serif").style('font-size', '18px').style('font-weight', '500')
+      .text('No global surveillance data');
+    svg.append('text')
+      .attr('x', w / 2).attr('y', h * 0.54)
+      .attr('text-anchor', 'middle').attr('fill', 'var(--ink-soft)')
+      .style('font-family', "'IBM Plex Sans', sans-serif").style('font-size', '13px').style('line-height', '1.6')
+      .text('Consistent country-level respiratory illness data');
+    svg.append('text')
+      .attr('x', w / 2).attr('y', h * 0.60)
+      .attr('text-anchor', 'middle').attr('fill', 'var(--ink-soft)')
+      .style('font-family', "'IBM Plex Sans', sans-serif").style('font-size', '13px')
+      .text('is not publicly available outside the US.');
+    var newsCount = (DATA.who_news || []).length;
+    if (newsCount > 0) {
+      svg.append('text')
+        .attr('x', w / 2).attr('y', h * 0.68)
+        .attr('text-anchor', 'middle').attr('fill', 'var(--uv)')
+        .style('font-family', "'IBM Plex Mono', monospace").style('font-size', '11px').style('letter-spacing', '0.05em')
+        .text('\u2193 ' + newsCount + ' WHO outbreak reports below \u2193');
+    }
   }
 
   function colorScale(values){
     var max = d3.max(values) || 1;
+    var min = d3.min(values) || 0;
     if (max === 0) return function() { return PALETTE[0]; };
-    if (scaleKind === 'log') {
-      return d3.scaleQuantize()
-        .domain([1, Math.log10(max + 10)])
-        .range(PALETTE);
-    }
-    return d3.scaleQuantize()
-      .domain([0, max])
-      .range(PALETTE);
+    var lo = Math.log10(Math.max(min, 0.01));
+    var hi = Math.log10(Math.max(max, 0.01));
+    var s = d3.scaleQuantize().domain([lo, hi]).range(PALETTE);
+    return function(v) { return v <= 0 ? PALETTE[0] : s(Math.log10(v)); };
   }
 
-  function weekLabel(week) {
-    if (week === 0) return 'Season Total';
+  function weekLabel(from, to) {
     var months = ['Jan','Jan','Jan','Feb','Feb','Mar','Mar','Mar','Apr','Apr','May','May',
       'Jun','Jun','Jul','Jul','Aug','Aug','Sep','Sep','Oct','Oct','Nov','Nov','Dec','Dec'];
-    var m = months[Math.min(Math.floor((week-1) / 2), months.length-1)];
-    return 'Week ' + week + ' (' + m + ')';
+    var m = function(w) { return months[Math.min(Math.floor((w-1) / 2), months.length-1)]; };
+    if (from === to) return 'Week ' + from + ' (' + m(from) + ')';
+    return 'Weeks ' + from + '\u2013' + to + ' (' + m(from) + '\u2013' + m(to) + ')';
   }
 
   function formatNum(n) {
@@ -460,6 +580,14 @@
   function formatRate(n, pop) {
     if (n == null || !pop) return '';
     return (n / pop * 100000).toFixed(1) + ' per 100k';
+  }
+
+  function severityTier(v) {
+    if (v == null) return null;
+    if (v < 1) return { label: 'Low', cls: 'low' };
+    if (v < 2.5) return { label: 'Moderate', cls: 'moderate' };
+    if (v < 5) return { label: 'High', cls: 'high' };
+    return { label: 'Very high', cls: 'very-high' };
   }
 
   function showTip(event, id, type){
@@ -473,14 +601,16 @@
       record = getStateRecord(id);
       name = record ? record.name : id;
       pop = record ? record.population : null;
-      val = getStateValue(id, disease, selectedWeek);
-      if (selectedWeek > 1) prevVal = getStateValue(id, disease, selectedWeek - 1);
+      val = getStateValue(id, disease, weekFrom, weekTo);
+      if (weekFrom > 1) prevVal = getStateValue(id, disease, weekFrom - 1, weekTo);
+      else if (weekFrom === 1) prevVal = null;
     } else {
       record = getCountryRecord(id);
       name = record ? record.name : (id || 'Unknown');
       pop = record ? record.population : null;
-      val = getDiseaseValue(record, disease, selectedWeek);
-      if (selectedWeek > 1) prevVal = getDiseaseValue(record, disease, selectedWeek - 1);
+      val = getDiseaseValue(record, disease, weekFrom, weekTo);
+      if (weekFrom > 1) prevVal = getDiseaseValue(record, disease, weekFrom - 1, weekTo);
+      else prevVal = null;
     }
 
     $tip.style.left = left + 'px';
@@ -491,12 +621,22 @@
     if (DATA.metadata && DATA.metadata.diseases && DATA.metadata.diseases[disease]) {
       diseaseLabel = DATA.metadata.diseases[disease].label;
     }
-    var weekStr = selectedWeek === 0 ? 'Year-to-date' : weekLabel(selectedWeek);
+    var isFullYtd = weekFrom === 1 && DATA.metadata && weekTo === DATA.metadata.current_week;
+    var weekStr = isFullYtd ? 'Year-to-date' : weekLabel(weekFrom, weekTo);
 
     var html = '<strong>' + name + '</strong>';
     html += '<div class="tt-row"><span>Disease</span><span class="tt-val">' + diseaseLabel + '</span></div>';
     html += '<div class="tt-row"><span>Period</span><span class="tt-val">' + weekStr + '</span></div>';
-    html += '<div class="tt-row"><span>ED visits</span><span class="tt-val">' + formatNum(val) + '%</span></div>';
+
+    if (val != null) {
+      var oneIn = val > 0 ? Math.round(100 / val) : null;
+      var tier = severityTier(val);
+      html += '<div class="tt-row"><span>ER visits for ' + diseaseLabel + '</span><span class="tt-val">' + formatNum(val) + '%</span></div>';
+      if (oneIn) html += '<div class="tt-row" style="font-size:10.5px;opacity:0.8;"><span>~1 in every ' + oneIn + ' ER visits</span></div>';
+      if (tier) html += '<div class="tt-row" style="margin-top:2px;"><span>Activity level</span><span><span class="tt-badge ' + tier.cls + '">' + tier.label + '</span></span></div>';
+    } else {
+      html += '<div class="tt-row"><span>Data</span><span class="tt-val" style="color:#888;">Not reported</span></div>';
+    }
 
     if (pop) {
       html += '<div class="tt-divider"></div>';
@@ -519,7 +659,7 @@
         html += '<div class="tt-divider"></div>';
         for (var i = 0; i < others.length; i++) {
           var od = others[i];
-          var ov = getDiseaseValue(record, od, selectedWeek);
+          var ov = getDiseaseValue(record, od, weekFrom, weekTo);
           var ol = od;
           if (DATA.metadata && DATA.metadata.diseases && DATA.metadata.diseases[od]) {
             ol = DATA.metadata.diseases[od].label;
@@ -537,48 +677,128 @@
   function drawLegend(){
     var values = layer === 'us' ? collectValuesUS() : collectValuesWorld();
     var max = d3.max(values) || 1;
+    var min = d3.min(values) || 0;
     var diseaseLabel = disease;
     if (DATA.metadata && DATA.metadata.diseases && DATA.metadata.diseases[disease]) {
       diseaseLabel = DATA.metadata.diseases[disease].label;
     }
-    var weekStr = selectedWeek === 0 ? '2026 year-to-date' : weekLabel(selectedWeek) + ', 2026';
+    var weekStr = 'Weeks ' + weekFrom + '–' + weekTo + ', 2026';
+    var isFullYtd = weekFrom === 1 && DATA.metadata && weekTo === DATA.metadata.current_week;
+    if (isFullYtd) weekStr = '2026 year-to-date';
+    else if (weekFrom === weekTo) weekStr = weekLabel(weekFrom, weekTo) + ', 2026';
+
+    var loLabel = Math.max(min, 0.01).toFixed(2) + '%';
+    var hiLabel = max.toFixed(1) + '%';
 
     $legend.innerHTML = (
       '<div style="font-weight:500;color:var(--ink);margin-bottom:4px;">' + diseaseLabel + '</div>' +
       '<div style="font-size:10.5px;color:var(--ink-soft);margin-bottom:6px;">' + weekStr + '</div>' +
       '<div class="legend-scale">' + PALETTE.map(function(c) { return '<span style="background:' + c + '"></span>'; }).join('') + '</div>' +
-      '<div class="legend-row"><span>low</span><span style="margin-left:auto;">' + max + '%</span></div>' +
+      '<div class="legend-row"><span>' + loLabel + '</span><span style="margin-left:auto;">' + hiLabel + '</span></div>' +
       '<div class="legend-row" style="color:var(--ink-soft);font-size:10.5px;margin-top:6px;">' +
         '<span style="display:inline-block;width:10px;height:10px;background:#E6E8E2;border:1px solid var(--line);margin-right:6px;"></span>' +
         'No data</div>'
     );
   }
+  // ---- Custom dual-handle slider ----
+  function pct(w) { return ((w - 1) / (maxWeek - 1)) * 100; }
 
-  // ---- Week slider ----
-  function updateWeek(sliderVal) {
-    var v = parseInt(sliderVal, 10);
-    if (v === 0) {
-      selectedWeek = 0;
-      $weekValue.textContent = 'All Weeks (YTD)';
-      if (DATA && DATA.metadata) $weekSlider.max = DATA.metadata.current_week;
-      $weekAllBtn.classList.add('on');
-    } else {
-      selectedWeek = v;
-      $weekValue.textContent = weekLabel(v);
-      $weekAllBtn.classList.remove('on');
-    }
+  function updateSliderUI() {
+    var pFrom = pct(weekFrom);
+    var pTo = pct(weekTo);
+    $handleFrom.style.left = pFrom + '%';
+    $handleTo.style.left = pTo + '%';
+    $rangeFill.style.left = pFrom + '%';
+    $rangeFill.style.right = (100 - pTo) + '%';
+    $weekFromLabel.textContent = 'Wk\u00a0' + weekFrom;
+    $weekToLabel.textContent = 'Wk\u00a0' + weekTo;
+    var isFullYtd = weekFrom === 1 && weekTo === maxWeek;
+    if (isFullYtd) $weekValue.textContent = 'Year-to-date';
+    else if (weekFrom === weekTo) $weekValue.textContent = 'Week ' + weekFrom;
+    else $weekValue.textContent = 'Weeks ' + weekFrom + '\u2013' + weekTo;
+    $weekAllBtn.classList.toggle('on', isFullYtd);
     render();
   }
 
-  $weekSlider.addEventListener('input', function() {
-    var v = parseInt(this.value, 10);
-    if (v !== 0) $weekAllBtn.classList.remove('on');
-    updateWeek(v);
+  function weekFromPos(x) {
+    var rect = $rangeSlider.getBoundingClientRect();
+    var pctX = Math.max(0, Math.min(1, (x - rect.left) / rect.width));
+    return Math.max(1, Math.min(maxWeek, Math.round(1 + pctX * (maxWeek - 1))));
+  }
+
+  // Drag state
+  var dragHandle = null; // 'from' or 'to'
+
+  function startDrag(handle, e) {
+    e.preventDefault();
+    dragHandle = handle;
+    var el = handle === 'from' ? $handleFrom : $handleTo;
+    el.classList.add('dragging');
+    document.addEventListener('mousemove', onDrag);
+    document.addEventListener('mouseup', endDrag);
+    document.addEventListener('touchmove', onDragTouch, { passive: false });
+    document.addEventListener('touchend', endDrag);
+  }
+
+  function onDrag(e) {
+    var w = weekFromPos(e.clientX);
+    if (dragHandle === 'from') {
+      w = Math.min(w, weekTo);
+      weekFrom = w;
+    } else {
+      w = Math.max(w, weekFrom);
+      weekTo = w;
+    }
+    updateSliderUI();
+  }
+
+  function onDragTouch(e) {
+    e.preventDefault();
+    var t = e.touches[0];
+    var w = weekFromPos(t.clientX);
+    if (dragHandle === 'from') {
+      w = Math.min(w, weekTo);
+      weekFrom = w;
+    } else {
+      w = Math.max(w, weekFrom);
+      weekTo = w;
+    }
+    updateSliderUI();
+  }
+
+  function endDrag() {
+    if (dragHandle) {
+      var el = dragHandle === 'from' ? $handleFrom : $handleTo;
+      el.classList.remove('dragging');
+    }
+    dragHandle = null;
+    document.removeEventListener('mousemove', onDrag);
+    document.removeEventListener('mouseup', endDrag);
+    document.removeEventListener('touchmove', onDragTouch);
+    document.removeEventListener('touchend', endDrag);
+  }
+
+  $handleFrom.addEventListener('mousedown', function(e) { startDrag('from', e); });
+  $handleFrom.addEventListener('touchstart', function(e) { startDrag('from', e); }, { passive: false });
+  $handleTo.addEventListener('mousedown', function(e) { startDrag('to', e); });
+  $handleTo.addEventListener('touchstart', function(e) { startDrag('to', e); }, { passive: false });
+
+  // Click on track — move nearest handle
+  $rangeSlider.addEventListener('mousedown', function(e) {
+    if (e.target !== $rangeSlider && e.target !== $rangeFill && e.target !== $rangeTrack) return;
+    var w = weekFromPos(e.clientX);
+    if (Math.abs(w - weekFrom) <= Math.abs(w - weekTo)) {
+      weekFrom = Math.min(w, weekTo);
+    } else {
+      weekTo = Math.max(w, weekFrom);
+    }
+    updateSliderUI();
   });
 
   $weekAllBtn.addEventListener('click', function() {
-    $weekSlider.value = 0;
-    updateWeek(0);
+    weekFrom = 1;
+    weekTo = maxWeek;
+    updateSliderUI();
   });
 
   // ---- Controls ----
@@ -595,7 +815,6 @@
   }
   bindSeg('layerSeg','data-layer', function(v) { layer = v; });
   bindSeg('diseaseSeg','data-disease', function(v) { disease = v; });
-  bindSeg('scaleSeg','data-scale', function(v) { scaleKind = v; });
 
   window.addEventListener('resize', render);
 

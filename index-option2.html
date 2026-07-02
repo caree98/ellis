@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ellis — The new gateway to a safer place</title>
+<meta name="description" content="Ellis turns the current science on ventilation, filtration, and germicidal UV into tools you can use today.">
+<link rel="icon" type="image/png" href="assets/flag-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  /* ─────────────────────────────────────────────
+     Option 2: Editorial / Narrative Magazine
+     Long-form feel. Large serif hero, pull
+     quotes, essay-style sections, full-bleed
+     flag mark, rich typography.
+     ───────────────────────────────────────────── */
+
+  .opt2-hero{
+    padding:80px 32px 64px;
+    background:var(--white);
+    position:relative;
+    overflow:hidden;
+    border-bottom:1px solid var(--line);
+  }
+  .opt2-hero::after{
+    content:'';
+    position:absolute;
+    top:40px;right:40px;
+    width:200px;height:200px;
+    background:radial-gradient(circle, var(--uv-soft) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .opt2-hero-inner{
+    max-width:820px;
+    margin:0 auto;
+    position:relative;z-index:1;
+  }
+  .opt2-hero-inner .hero-kicker{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;letter-spacing:0.14em;text-transform:uppercase;
+    color:var(--uv);margin:0 0 20px;
+  }
+  .opt2-hero-inner h1{
+    font-family:'Source Serif 4', serif;
+    font-weight:400;font-size:54px;line-height:1.06;
+    color:var(--ink);margin:0 0 20px;
+    letter-spacing:-0.025em;
+  }
+  .opt2-hero-inner h1 em{
+    font-style:italic;font-weight:600;color:var(--uv);
+    display:block;
+  }
+  .opt2-hero-inner .hero-lede{
+    font-size:18px;color:var(--ink-soft);
+    line-height:1.6;max-width:600px;
+    margin:0 0 32px;
+  }
+  .opt2-hero-inner .hero-meta{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;color:var(--ink-soft);
+    letter-spacing:0.04em;
+    display:flex;gap:24px;
+    border-top:1px solid var(--line);
+    padding-top:18px;
+  }
+
+  /* Full-bleed flag mark */
+  .opt2-flag-section{
+    background:var(--uv-soft);
+    padding:56px 32px;
+    border-bottom:1px solid var(--line);
+    position:relative;
+    overflow:hidden;
+  }
+  .opt2-flag-section::before{
+    content:'';
+    position:absolute;
+    top:0;right:0;bottom:0;
+    width:40%;
+    background:linear-gradient(to left, var(--uv) 0%, transparent 100%);
+    opacity:0.06;
+    pointer-events:none;
+  }
+  .opt2-flag-inner{
+    max-width:820px;margin:0 auto;
+    display:flex;align-items:center;gap:40px;
+  }
+  @media (max-width:700px){.opt2-flag-inner{flex-direction:column;}}
+  .opt2-flag-mark{
+    flex-shrink:0;
+    width:80px;height:80px;
+    background:var(--ink);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .opt2-flag-mark svg{width:32px;height:32px;display:block;}
+  .opt2-flag-text{
+    font-family:'Source Serif 4', serif;
+    font-size:22px;font-style:italic;font-weight:400;
+    line-height:1.4;color:var(--ink);
+    margin:0;
+  }
+  .opt2-flag-text strong{
+    font-style:normal;font-weight:500;
+  }
+
+  /* Essay-style sections */
+  .opt2-essay{
+    max-width:680px;
+    margin:0 auto;
+    padding:64px 32px;
+  }
+  .opt2-essay h2{
+    font-family:'Source Serif 4', serif;
+    font-size:32px;font-weight:500;
+    margin:0 0 20px;letter-spacing:-0.01em;
+    color:var(--ink);
+    line-height:1.15;
+  }
+  .opt2-essay p{
+    font-size:16px;line-height:1.7;
+    color:var(--ink-soft);margin:0 0 18px;
+  }
+  .opt2-essay p:last-child{margin-bottom:0;}
+
+  /* Pull quote */
+  .opt2-pull{
+    max-width:600px;margin:48px auto 48px;
+    padding:32px 0 32px 32px;
+    border-left:3px solid var(--uv);
+  }
+  .opt2-pull blockquote{
+    font-family:'Source Serif 4', serif;
+    font-style:italic;font-weight:500;
+    font-size:26px;color:var(--ink);
+    line-height:1.3;letter-spacing:-0.01em;
+    margin:0 0 12px;
+  }
+  .opt2-pull cite{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;font-style:normal;
+    text-transform:uppercase;letter-spacing:0.08em;
+    color:var(--ink-soft);
+  }
+
+  /* Section divider (stat) */
+  .opt2-stat-block{
+    max-width:820px;margin:0 auto;
+    padding:48px 32px 48px;
+    display:grid;grid-template-columns:1fr 1fr 1fr;
+    gap:24px;border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  @media (max-width:600px){.opt2-stat-block{grid-template-columns:1fr;}}
+  .opt2-stat-item{text-align:center;}
+  .opt2-stat-num{
+    font-family:'Source Serif 4', serif;
+    font-size:40px;font-weight:500;color:var(--ink);
+    letter-spacing:-0.02em;margin:0 0 4px;
+  }
+  .opt2-stat-num .small{
+    font-size:16px;font-family:'IBM Plex Sans',sans-serif;
+    font-weight:400;color:var(--ink-soft);
+  }
+  .opt2-stat-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+    color:var(--ink-soft);margin:0;
+  }
+
+  /* Thread cards — editorial grid */
+  .opt2-threads{
+    max-width:820px;margin:0 auto;
+    padding:64px 32px 80px;
+  }
+  .opt2-threads-head{
+    margin-bottom:36px;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:14px;
+    display:flex;justify-content:space-between;align-items:baseline;
+  }
+  .opt2-threads-head h2{
+    font-family:'Source Serif 4', serif;
+    font-size:24px;font-weight:600;margin:0;
+    letter-spacing:-0.01em;
+  }
+  .opt2-threads-head .all-link{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;text-transform:uppercase;
+    letter-spacing:0.06em;text-decoration:none;color:var(--uv);
+  }
+  .opt2-threads-head .all-link:hover{color:var(--ink);}
+
+  .opt2-thread-list{
+    display:flex;flex-direction:column;
+  }
+  .opt2-thread-row{
+    display:grid;
+    grid-template-columns:80px 1fr auto;
+    gap:20px;
+    padding:22px 0;
+    border-bottom:1px solid var(--line);
+    text-decoration:none;color:var(--ink);
+    transition:background .15s;
+  }
+  .opt2-thread-row:last-child{border-bottom:none;}
+  .opt2-thread-row:hover .thread-title{color:var(--uv);}
+  .thread-num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;color:var(--line);letter-spacing:0.04em;
+    align-self:start;padding-top:2px;
+  }
+  .thread-info{}
+  .thread-eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+    color:var(--uv);margin:0 0 4px;
+  }
+  .opt2-thread-row:nth-child(2) .thread-eyebrow{color:var(--sage);}
+  .opt2-thread-row:nth-child(3) .thread-eyebrow{color:var(--amber);}
+  .opt2-thread-row:nth-child(4) .thread-eyebrow{color:var(--red);}
+  .opt2-thread-row:nth-child(5) .thread-eyebrow{color:var(--ink-soft);}
+  .opt2-thread-row:nth-child(6) .thread-eyebrow{color:var(--uv);}
+  .thread-title{
+    font-family:'Source Serif 4', serif;
+    font-size:18px;font-weight:500;margin:0 0 4px;
+    transition:color .15s;
+  }
+  .thread-desc{
+    font-size:13px;color:var(--ink-soft);margin:0;line-height:1.5;
+  }
+  .thread-arrow{
+    align-self:center;
+    font-size:18px;color:var(--line);
+    transition:color .15s;
+  }
+  .opt2-thread-row:hover .thread-arrow{color:var(--uv);}
+
+  /* Shepherd excerpt */
+  .opt2-shepherd-block{
+    max-width:820px;margin:0 auto 48px;
+    padding:0 32px;
+  }
+  .opt2-shepherd-card{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-left:4px solid var(--uv);
+    padding:32px;
+  }
+  .opt2-shepherd-card .sh-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+    color:var(--uv);margin:0 0 10px;
+  }
+  .opt2-shepherd-card h3{
+    font-family:'Source Serif 4', serif;
+    font-size:22px;font-weight:500;margin:0 0 8px;
+  }
+  .opt2-shepherd-card p{
+    font-size:14px;color:var(--ink-soft);
+    margin:0 0 16px;line-height:1.55;
+  }
+  .opt2-shepherd-card .sh-cta{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;font-weight:500;color:var(--uv);
+    text-decoration:none;display:inline-flex;align-items:center;gap:6px;
+  }
+  .opt2-shepherd-card .sh-cta:hover{color:var(--ink);}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="brand">
+    <img src="assets/flag-logo.png" alt="" width="54" height="44">
+    <span class="brand-text">
+      <span class="brand-line1">ellis</span>
+      <span class="brand-line2">biosecurity network</span>
+    </span>
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li class="has-dropdown">
+        <a href="about-mission.html" class="nav-trigger">About</a>
+        <div class="dropdown-panel" role="menu">
+          <a href="about-mission.html">Mission</a>
+          <a href="about-team.html">Team</a>
+        </div>
+      </li>
+      <li class="has-dropdown">
+        <a href="learn.html" class="nav-trigger">Learn</a>
+        <div class="dropdown-panel" role="menu">
+          <a href="learn.html">Overview</a>
+          <a href="learn-foundations.html">Foundations</a>
+          <a href="learn-filtration-ventilation.html">Filtration &amp; Ventilation</a>
+          <a href="learn-germicidal-uv.html">Germicidal UV</a>
+          <a href="learn-monitoring.html">Monitoring</a>
+          <a href="learn-readiness.html">Readiness</a>
+        </div>
+      </li>
+      <li class="has-dropdown">
+        <a href="tools.html" class="nav-trigger">Tools</a>
+        <div class="dropdown-panel" role="menu">
+          <a href="building-scorecard.html">Building Scorecard</a>
+          <a href="guv-deployment-engine.html">GUV Deployment Engine</a>
+          <a href="map.html">Surveillance Map</a>
+        </div>
+      </li>
+      <li><a href="shepherd.html">Shepherd</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── Hero: editorial lede ── -->
+<section class="opt2-hero">
+  <div class="opt2-hero-inner">
+    <p class="hero-kicker">Ellis &middot; Issue No. 1</p>
+    <h1>We built the tools we wished existed. <em>Now they're yours.</em></h1>
+    <p class="hero-lede">Every day, buildings fill with air that hasn't been thought about since the blueprints were drawn. The science on how to fix it exists — but it's locked inside journals, engineering specs, and six-figure consulting reports. We're pulling it out.</p>
+    <div class="hero-meta">
+      <span>Biosecurity Network</span>
+      <span>&middot;</span>
+      <span>Updated weekly</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── Flag mark + conviction ── -->
+<section class="opt2-flag-section">
+  <div class="opt2-flag-inner">
+    <div class="opt2-flag-mark">
+      <svg viewBox="0 0 26 26" fill="none">
+        <circle cx="13" cy="13" r="13" fill="#1C2933"/>
+        <path d="M10 8L18 13L10 18V8Z" fill="#F2F3F0"/>
+      </svg>
+    </div>
+    <p class="opt2-flag-text">
+      <strong>Clean air is a decision, not an accident.</strong>
+      &nbsp;We give you the numbers, the context, and the move to make.
+    </p>
+  </div>
+</section>
+
+<!-- ── Essay: why this matters ── -->
+<section class="opt2-essay">
+  <h2>The gap between what we know and what we do is measured in tools.</h2>
+  <p>Indoor air quality isn't a niche concern. Schools, offices, clinics, community centers — the air in every shared space affects whether people get sick, how well they think, and how safe they feel showing up.</p>
+  <p>The engineering solutions are proven: better filtration, targeted ventilation, germicidal ultraviolet. What's missing isn't the science. It's the bridge — the scorecard that turns a walk-through into a budget item, the map that turns wastewater data into a Monday-morning decision, the plain-language explanation that turns a journal article into a conversation with a facilities manager.</p>
+</section>
+
+<!-- ── Pull quote ── -->
+<div class="opt2-pull">
+  <blockquote>"The most expensive air is the air you never thought about until someone got sick."</blockquote>
+  <cite>&mdash; Ellis Field Notes</cite>
+</div>
+
+<!-- ── Stat block ── -->
+<div class="opt2-stat-block">
+  <div class="opt2-stat-item">
+    <p class="opt2-stat-num">8,204</p>
+    <p class="opt2-stat-label">Tools run this week</p>
+  </div>
+  <div class="opt2-stat-item">
+    <p class="opt2-stat-num">Moderate <span class="small">(CDC)</span></p>
+    <p class="opt2-stat-label">Respiratory activity</p>
+  </div>
+  <div class="opt2-stat-item">
+    <p class="opt2-stat-num">+12<span class="small">%</span></p>
+    <p class="opt2-stat-label">Wastewater vs last week</p>
+  </div>
+</div>
+
+<!-- ── Thread list ── -->
+<section class="opt2-threads">
+  <div class="opt2-threads-head">
+    <h2>Explore the threads</h2>
+    <a href="learn.html" class="all-link">See all &rarr;</a>
+  </div>
+  <div class="opt2-thread-list">
+    <a href="tools.html" class="opt2-thread-row">
+      <span class="thread-num">01</span>
+      <div class="thread-info">
+        <p class="thread-eyebrow">Tools</p>
+        <p class="thread-title">Score, plan, and monitor your spaces</p>
+        <p class="thread-desc">Self-assessments and calculators that give you a number or a plan you can act on.</p>
+      </div>
+      <span class="thread-arrow">&rarr;</span>
+    </a>
+    <a href="learn.html" class="opt2-thread-row">
+      <span class="thread-num">02</span>
+      <div class="thread-info">
+        <p class="thread-eyebrow">Learn</p>
+        <p class="thread-title">How this actually works</p>
+        <p class="thread-desc">The science, the citations, and what we know vs. what's still being figured out.</p>
+      </div>
+      <span class="thread-arrow">&rarr;</span>
+    </a>
+    <a href="shepherd.html" class="opt2-thread-row">
+      <span class="thread-num">03</span>
+      <div class="thread-info">
+        <p class="thread-eyebrow">Shepherd</p>
+        <p class="thread-title">The weekly dispatch</p>
+        <p class="thread-desc">One finding, one thing to do with it. Every week, in plain language.</p>
+      </div>
+      <span class="thread-arrow">&rarr;</span>
+    </a>
+    <a href="map.html" class="opt2-thread-row">
+      <span class="thread-num">04</span>
+      <div class="thread-info">
+        <p class="thread-eyebrow">Map</p>
+        <p class="thread-title">What's circulating, where</p>
+        <p class="thread-desc">Weekly signal for respiratory illness — from US states to global surveillance.</p>
+      </div>
+      <span class="thread-arrow">&rarr;</span>
+    </a>
+    <a href="timeline.html" class="opt2-thread-row">
+      <span class="thread-num">05</span>
+      <div class="thread-info">
+        <p class="thread-eyebrow">Timeline</p>
+        <p class="thread-title">Then to now</p>
+        <p class="thread-desc">Biodefense and infectious disease history — from antiquity to this morning's feed.</p>
+      </div>
+      <span class="thread-arrow">&rarr;</span>
+    </a>
+    <a href="act.html" class="opt2-thread-row">
+      <span class="thread-num">06</span>
+      <div class="thread-info">
+        <p class="thread-eyebrow">Act</p>
+        <p class="thread-title">Move a budget conversation</p>
+        <p class="thread-desc">Letters, timelines, local chapters. Turn your scorecard into real-world action.</p>
+      </div>
+      <span class="thread-arrow">&rarr;</span>
+    </a>
+  </div>
+</section>
+
+<!-- ── Shepherd excerpt ── -->
+<div class="opt2-shepherd-block">
+  <div class="opt2-shepherd-card">
+    <p class="sh-label">Latest dispatch</p>
+    <h3>Why eACH beats ACH</h3>
+    <p>A single number masks everything that matters. Equivalent Air Changes per Hour tells you what ACH never could — and changes how you think about filter placement.</p>
+    <a href="shepherd.html" class="sh-cta">Read the full post &rarr;</a>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-row">
+          <img src="assets/flag-logo.png" alt="" width="30" height="30">
+          <span class="footer-brand-text">
+            <span class="footer-brand-line1">ellis</span>
+            <span class="footer-brand-line2">biosecurity network</span>
+          </span>
+        </div>
+        <p class="footer-tag">Indoor air defense and pandemic preparedness, made actionable. Not a substitute for a licensed HVAC engineer or industrial hygienist.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <ul>
+          <li><a href="building-scorecard.html">Building Scorecard</a></li>
+          <li><a href="guv-deployment-engine.html">GUV Deployment Engine</a></li>
+          <li><a href="map.html">Surveillance Map</a></li>
+          <li><a href="#">Letter generator</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="learn.html">Overview</a></li>
+          <li><a href="learn-foundations.html">Foundations</a></li>
+          <li><a href="learn-filtration-ventilation.html">Filtration &amp; Ventilation</a></li>
+          <li><a href="learn-germicidal-uv.html">Germicidal UV</a></li>
+          <li><a href="learn-monitoring.html">Monitoring</a></li>
+          <li><a href="learn-readiness.html">Readiness</a></li>
+          <li><a href="timeline.html">The timeline</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Organization</h4>
+        <ul>
+          <li><a href="#">About &amp; sourcing</a></li>
+          <li><a href="shepherd.html">Shepherd</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="#">Partner with us</a></li>
+          <li><a href="#">Donate</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Ellis</span>
+      <span>v0.1 prototype</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

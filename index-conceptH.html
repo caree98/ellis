@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ellis — The new gateway to a safer place</title>
+<meta name="description" content="Ellis turns the current science on ventilation, filtration, and germicidal UV into tools you can use today.">
+<link rel="icon" type="image/png" href="assets/flag-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  /* ═══════════════════════════════════════════════
+     Concept H: "NEO-GROTESK / TECHNICAL"
+     Sora (headings, sharp, modern, geometric)
+     + DM Sans (body, clean, readable).
+     High contrast. Dark ink used aggressively.
+     Thin rules, sharp corners, data-forward.
+     Monochrome-leaning with UV as accent only.
+     ═══════════════════════════════════════════════ */
+
+  body{background:var(--white);}
+  nav{border-bottom:2px solid var(--ink);background:var(--white);}
+
+  .ng-hero{
+    padding:56px 32px 48px;
+    background:var(--white);
+    border-bottom:1px solid var(--line);
+  }
+  .ng-hero-inner{
+    max-width:1180px;margin:0 auto;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+  }
+  @media (max-width:760px){.ng-hero-inner{grid-template-columns:1fr;}}
+  .ng-hero-text{}
+  .ng-hero-text .ng-kicker{
+    font-family:'DM Sans', sans-serif;
+    font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;
+    color:var(--ink);margin:0 0 14px;
+    opacity:0.5;
+  }
+  .ng-hero-text h1{
+    font-family:'Sora', sans-serif;
+    font-weight:700;font-size:44px;line-height:1.05;
+    color:var(--ink);margin:0 0 16px;
+    letter-spacing:-0.03em;
+  }
+  .ng-hero-text h1 em{
+    font-style:normal;color:var(--uv);
+  }
+  .ng-hero-text .ng-lede{
+    font-family:'DM Sans', sans-serif;
+    font-size:15px;color:var(--ink-soft);
+    line-height:1.55;max-width:400px;margin:0 0 28px;
+  }
+  .ng-hero-text .ng-cta-row{
+    display:flex;gap:10px;flex-wrap:wrap;
+  }
+  .ng-hero-text .ng-cta-row .btn{
+    font-family:'Sora', sans-serif;
+    font-weight:600;font-size:13px;padding:13px 24px;
+    border-radius:2px;
+  }
+  .ng-hero-text .ng-cta-row .btn.secondary{
+    background:transparent;border-color:var(--ink);color:var(--ink);
+  }
+
+  .ng-hero-stats{
+    display:flex;flex-direction:column;gap:0;
+    border-top:2px solid var(--ink);
+  }
+  .ng-stat-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .ng-stat-row:last-child{border-bottom:none;}
+  .ng-stat-row .ng-stat-label{
+    font-family:'DM Sans', sans-serif;
+    font-size:12px;font-weight:500;color:var(--ink-soft);
+    text-transform:uppercase;letter-spacing:0.04em;
+  }
+  .ng-stat-row .ng-stat-val{
+    font-family:'Sora', sans-serif;
+    font-weight:600;font-size:18px;color:var(--ink);
+    text-align:right;
+  }
+  .ng-stat-row .ng-stat-val .ng-sub{
+    font-size:12px;font-weight:400;color:var(--ink-soft);
+    font-family:'DM Sans', sans-serif;
+  }
+  .ng-stat-row.ng-link-row{
+    text-decoration:none;color:inherit;
+    transition:background .15s;
+    padding:16px 12px;margin:0 -12px;
+  }
+  .ng-stat-row.ng-link-row:hover{
+    background:var(--paper);
+  }
+  .ng-stat-row.ng-link-row .ng-stat-label{
+    color:var(--uv);font-weight:600;
+  }
+
+  /* Content grid */
+  .ng-content{
+    padding:64px 32px;
+    background:var(--white);
+  }
+  .ng-content-inner{
+    max-width:1180px;margin:0 auto;
+  }
+  .ng-content-head{
+    margin-bottom:36px;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:14px;
+    display:flex;justify-content:space-between;align-items:baseline;
+  }
+  .ng-content-head h2{
+    font-family:'Sora', sans-serif;
+    font-weight:700;font-size:24px;margin:0;
+    letter-spacing:-0.02em;text-transform:uppercase;
+  }
+  .ng-content-head .ng-all{
+    font-family:'DM Sans', sans-serif;
+    font-size:12px;font-weight:600;color:var(--uv);
+    text-decoration:none;text-transform:uppercase;letter-spacing:0.04em;
+  }
+  .ng-content-head .ng-all:hover{color:var(--ink);}
+
+  .ng-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:16px;
+  }
+  @media (max-width:760px){.ng-grid{grid-template-columns:1fr;}}
+  .ng-grid-item{
+    border:1px solid var(--line);
+    padding:28px 24px;
+    text-decoration:none;color:var(--ink);
+    display:flex;flex-direction:column;
+    transition:border-color .2s, background .2s;
+  }
+  .ng-grid-item:hover{
+    border-color:var(--ink);
+    background:var(--paper);
+  }
+  .ng-grid-item .ng-item-label{
+    font-family:'DM Sans', sans-serif;
+    font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;
+    color:var(--uv);margin:0 0 10px;
+  }
+  .ng-grid-item:nth-child(2) .ng-item-label{color:var(--sage);}
+  .ng-grid-item:nth-child(3) .ng-item-label{color:var(--amber);}
+  .ng-grid-item:nth-child(4) .ng-item-label{color:var(--red);}
+  .ng-grid-item:nth-child(5) .ng-item-label{color:var(--ink-soft);}
+  .ng-grid-item:nth-child(6) .ng-item-label{color:var(--uv);}
+  .ng-grid-item h3{
+    font-family:'Sora', sans-serif;
+    font-weight:600;font-size:18px;margin:0 0 8px;
+    line-height:1.2;letter-spacing:-0.01em;
+  }
+  .ng-grid-item p{
+    font-family:'DM Sans', sans-serif;
+    font-size:13px;color:var(--ink-soft);
+    margin:0 0 16px;line-height:1.5;flex-grow:1;
+  }
+  .ng-grid-item .ng-item-cta{
+    font-family:'Sora', sans-serif;
+    font-size:12px;font-weight:600;color:var(--ink);
+    display:flex;align-items:center;gap:6px;
+    text-transform:uppercase;letter-spacing:0.04em;
+  }
+  .ng-grid-item:hover .ng-item-cta{color:var(--uv);}
+
+  /* Thin closing bar */
+  .ng-closing{
+    padding:48px 32px;
+    background:var(--ink);
+  }
+  .ng-closing-inner{
+    max-width:1180px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:20px;flex-wrap:wrap;
+  }
+  .ng-closing-inner h2{
+    font-family:'Sora', sans-serif;
+    font-weight:600;font-size:22px;
+    color:var(--paper);margin:0;
+    letter-spacing:-0.01em;
+  }
+  .ng-closing-inner .ng-closing-btn{
+    font-family:'Sora', sans-serif;
+    font-size:13px;font-weight:600;
+    text-transform:uppercase;letter-spacing:0.06em;
+    background:var(--paper);color:var(--ink);
+    padding:12px 24px;text-decoration:none;
+  }
+  .ng-closing-inner .ng-closing-btn:hover{background:var(--white);}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="brand">
+    <img src="assets/flag-logo.png" alt="" width="54" height="44">
+    <span class="brand-text">
+      <span class="brand-line1">ellis</span>
+      <span class="brand-line2">biosecurity network</span>
+    </span>
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li class="has-dropdown">
+        <a href="about-mission.html" class="nav-trigger">About</a>
+        <div class="dropdown-panel" role="menu">
+          <a href="about-mission.html">Mission</a>
+          <a href="about-team.html">Team</a>
+        </div>
+      </li>
+      <li class="has-dropdown">
+        <a href="learn.html" class="nav-trigger">Learn</a>
+        <div class="dropdown-panel" role="menu">
+          <a href="learn.html">Overview</a>
+          <a href="learn-foundations.html">Foundations</a>
+          <a href="learn-filtration-ventilation.html">Filtration &amp; Ventilation</a>
+          <a href="learn-germicidal-uv.html">Germicidal UV</a>
+          <a href="learn-monitoring.html">Monitoring</a>
+          <a href="learn-readiness.html">Readiness</a>
+        </div>
+      </li>
+      <li class="has-dropdown">
+        <a href="tools.html" class="nav-trigger">Tools</a>
+        <div class="dropdown-panel" role="menu">
+          <a href="building-scorecard.html">Building Scorecard</a>
+          <a href="guv-deployment-engine.html">GUV Deployment Engine</a>
+          <a href="map.html">Surveillance Map</a>
+        </div>
+      </li>
+      <li><a href="shepherd.html">Shepherd</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<section class="ng-hero">
+  <div class="ng-hero-inner">
+    <div class="ng-hero-text">
+      <p class="ng-kicker">Ellis / BG-001</p>
+      <h1>Measure. Plan. <em>Act.</em></h1>
+      <p class="ng-lede">Three tools that turn airborne transmission science into a concrete next step. No fluff. No gatekeeping.</p>
+      <div class="ng-cta-row">
+        <a href="building-scorecard.html" class="btn">SCORE YOUR BUILDING</a>
+        <a href="learn.html" class="btn secondary">READ THE SPECS</a>
+      </div>
+    </div>
+    <div class="ng-hero-stats">
+      <div class="ng-stat-row">
+        <span class="ng-stat-label">Respiratory activity</span>
+        <span class="ng-stat-val">Moderate <span class="ng-sub">CDC ILINet</span></span>
+      </div>
+      <div class="ng-stat-row">
+        <span class="ng-stat-label">Wastewater signal</span>
+        <span class="ng-stat-val">+12% <span class="ng-sub">vs last week</span></span>
+      </div>
+      <div class="ng-stat-row">
+        <span class="ng-stat-label">Assessments this week</span>
+        <span class="ng-stat-val">8,204</span>
+      </div>
+      <a href="shepherd.html" class="ng-stat-row ng-link-row">
+        <span class="ng-stat-label">Latest from Shepherd</span>
+        <span class="ng-stat-val">Why eACH beats ACH <span class="ng-sub">&rarr;</span></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Content ── -->
+<section class="ng-content">
+  <div class="ng-content-inner">
+    <div class="ng-content-head">
+      <h2>Index</h2>
+      <a href="learn.html" class="ng-all">View all &rarr;</a>
+    </div>
+    <div class="ng-grid">
+      <a href="tools.html" class="ng-grid-item">
+        <span class="ng-item-label">Tools</span>
+        <h3>Score, plan, monitor</h3>
+        <p>Self-assessments and calculators that give you a number or a plan you can act on.</p>
+        <span class="ng-item-cta">Access &rarr;</span>
+      </a>
+      <a href="learn.html" class="ng-grid-item">
+        <span class="ng-item-label">Learn</span>
+        <h3>How this works</h3>
+        <p>The science, citations, and what's known vs. what's still in question — for non-engineers.</p>
+        <span class="ng-item-cta">Read &rarr;</span>
+      </a>
+      <a href="shepherd.html" class="ng-grid-item">
+        <span class="ng-item-label">Shepherd</span>
+        <h3>Weekly dispatch</h3>
+        <p>One signal from the noise, one thing to do with it. Every week.</p>
+        <span class="ng-item-cta">Subscribe &rarr;</span>
+      </a>
+      <a href="map.html" class="ng-grid-item">
+        <span class="ng-item-label">Map</span>
+        <h3>Surveillance</h3>
+        <p>Respiratory illness and wastewater data for US states and globally.</p>
+        <span class="ng-item-cta">Explore &rarr;</span>
+      </a>
+      <a href="timeline.html" class="ng-grid-item">
+        <span class="ng-item-label">Timeline</span>
+        <h3>Biodefense history</h3>
+        <p>A long view of infectious disease — from antiquity to this morning.</p>
+        <span class="ng-item-cta">Browse &rarr;</span>
+      </a>
+      <a href="act.html" class="ng-grid-item">
+        <span class="ng-item-label">Act</span>
+        <h3>Make the move</h3>
+        <p>Letters, budget proposals, and chapter tools for real-world action.</p>
+        <span class="ng-item-cta">Start &rarr;</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Closing ── -->
+<section class="ng-closing">
+  <div class="ng-closing-inner">
+    <h2>Your building has a score. Find it.</h2>
+    <a href="building-scorecard.html" class="ng-closing-btn">Score now</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-row">
+          <img src="assets/flag-logo.png" alt="" width="30" height="30">
+          <span class="footer-brand-text">
+            <span class="footer-brand-line1">ellis</span>
+            <span class="footer-brand-line2">biosecurity network</span>
+          </span>
+        </div>
+        <p class="footer-tag">Indoor air defense and pandemic preparedness, made actionable. Not a substitute for a licensed HVAC engineer or industrial hygienist.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <ul>
+          <li><a href="building-scorecard.html">Building Scorecard</a></li>
+          <li><a href="guv-deployment-engine.html">GUV Deployment Engine</a></li>
+          <li><a href="map.html">Surveillance Map</a></li>
+          <li><a href="#">Letter generator</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="learn.html">Overview</a></li>
+          <li><a href="learn-foundations.html">Foundations</a></li>
+          <li><a href="learn-filtration-ventilation.html">Filtration &amp; Ventilation</a></li>
+          <li><a href="learn-germicidal-uv.html">Germicidal UV</a></li>
+          <li><a href="learn-monitoring.html">Monitoring</a></li>
+          <li><a href="learn-readiness.html">Readiness</a></li>
+          <li><a href="timeline.html">The timeline</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Organization</h4>
+        <ul>
+          <li><a href="#">About &amp; sourcing</a></li>
+          <li><a href="shepherd.html">Shepherd</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="#">Partner with us</a></li>
+          <li><a href="#">Donate</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Ellis</span>
+      <span>v0.1 prototype</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

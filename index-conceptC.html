@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ellis — The new gateway to a safer place</title>
+<meta name="description" content="Ellis turns the current science on ventilation, filtration, and germicidal UV into tools you can use today.">
+<link rel="icon" type="image/png" href="assets/flag-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  /* ═══════════════════════════════════════════════
+     Concept C: "Single Column Manifesto"
+     Ultra-minimal. Narrow column. Lots of white.
+     Tiny monospace hero, report-like sections,
+     footnotes, marginalia. Quiet, confident,
+     almost academic.
+     ═══════════════════════════════════════════════ */
+
+  .mf-body{
+    max-width:520px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+
+  /* Hero — just a few lines */
+  .mf-hero{
+    padding:96px 0 64px;
+    border-bottom:1px solid var(--line);
+  }
+  .mf-hero .mf-kicker{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;letter-spacing:0.18em;text-transform:uppercase;
+    color:var(--uv);margin:0 0 24px;
+  }
+  .mf-hero h1{
+    font-family:'Source Serif 4', serif;
+    font-weight:400;font-size:36px;line-height:1.1;
+    color:var(--ink);margin:0 0 20px;
+    letter-spacing:-0.02em;
+  }
+  .mf-hero h1 em{
+    font-style:italic;font-weight:600;color:var(--uv);
+  }
+  .mf-hero .mf-lede{
+    font-size:15px;color:var(--ink-soft);
+    line-height:1.65;margin:0 0 32px;
+  }
+  .mf-hero .mf-byline{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;color:var(--ink-soft);
+    letter-spacing:0.04em;
+    border-top:1px solid var(--line);
+    padding-top:14px;
+    display:flex;gap:20px;
+  }
+
+  /* Section styles */
+  .mf-section{
+    padding:48px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .mf-section:last-of-type{border-bottom:none;}
+  .mf-section .mf-sect-num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;letter-spacing:0.08em;
+    color:var(--line);margin:0 0 16px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .mf-section .mf-sect-num::after{
+    content:'';flex:1;height:1px;background:var(--line);
+  }
+  .mf-section h2{
+    font-family:'Source Serif 4', serif;
+    font-weight:500;font-size:24px;margin:0 0 14px;
+    letter-spacing:-0.01em;color:var(--ink);
+    line-height:1.2;
+  }
+  .mf-section p{
+    font-size:14.5px;line-height:1.7;
+    color:var(--ink-soft);margin:0 0 14px;
+  }
+  .mf-section p:last-child{margin-bottom:0;}
+  .mf-section .mf-stat{
+    font-family:'Source Serif 4', serif;
+    font-weight:500;font-size:38px;color:var(--ink);
+    letter-spacing:-0.02em;margin:24px 0 8px;
+    line-height:1;
+  }
+  .mf-section .mf-stat-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+    color:var(--ink-soft);margin:0 0 16px;
+  }
+  .mf-section .mf-footnote{
+    font-size:12px;color:var(--ink-soft);
+    line-height:1.5;margin:20px 0 0;
+    padding:12px 0 0;
+    border-top:1px solid var(--line);
+  }
+  .mf-section .mf-footnote a{
+    color:var(--uv);text-decoration:none;
+    border-bottom:1px solid var(--uv);
+  }
+
+  /* Link list */
+  .mf-link-item{
+    display:flex;align-items:baseline;gap:12px;
+    padding:14px 0;
+    border-bottom:1px solid var(--line);
+    text-decoration:none;color:var(--ink);
+    transition:color .15s;
+  }
+  .mf-link-item:last-child{border-bottom:none;}
+  .mf-link-item:hover{color:var(--uv);}
+  .mf-link-item .li-num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;color:var(--line);width:24px;flex-shrink:0;
+  }
+  .mf-link-item .li-content{}
+  .mf-link-item .li-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:9px;letter-spacing:0.1em;text-transform:uppercase;
+    color:var(--ink-soft);margin:0 0 2px;
+  }
+  .mf-link-item .li-title{
+    font-size:15px;font-weight:500;margin:0;
+  }
+  .mf-link-item .li-arrow{font-size:14px;margin-left:auto;color:var(--line);}
+  .mf-link-item:hover .li-arrow{color:var(--uv);}
+
+  /* End matter */
+  .mf-end{
+    padding:48px 0 72px;
+    text-align:center;
+  }
+  .mf-end .mf-end-mark{
+    width:48px;height:48px;
+    background:var(--ink);
+    border-radius:50%;
+    display:inline-flex;align-items:center;justify-content:center;
+    margin-bottom:20px;
+  }
+  .mf-end .mf-end-mark svg{width:18px;height:18px;display:block;}
+  .mf-end p{
+    font-family:'Source Serif 4', serif;
+    font-style:italic;font-weight:400;
+    font-size:18px;color:var(--ink-soft);
+    line-height:1.5;margin:0 0 24px;
+  }
+  .mf-end .mf-end-btn{
+    display:inline-block;
+    font-size:14px;font-weight:500;
+    padding:13px 24px;
+    background:var(--ink);color:var(--paper);
+    text-decoration:none;border-radius:4px;
+    font-family:inherit;
+  }
+  .mf-end .mf-end-btn:hover{opacity:0.85;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="brand">
+    <img src="assets/flag-logo.png" alt="" width="54" height="44">
+    <span class="brand-text">
+      <span class="brand-line1">ellis</span>
+      <span class="brand-line2">biosecurity network</span>
+    </span>
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li class="has-dropdown">
+        <a href="about-mission.html" class="nav-trigger">About</a>
+        <div class="dropdown-panel" role="menu">
+          <a href="about-mission.html">Mission</a>
+          <a href="about-team.html">Team</a>
+        </div>
+      </li>
+      <li class="has-dropdown">
+        <a href="learn.html" class="nav-trigger">Learn</a>
+        <div class="dropdown-panel" role="menu">
+          <a href="learn.html">Overview</a>
+          <a href="learn-foundations.html">Foundations</a>
+          <a href="learn-filtration-ventilation.html">Filtration &amp; Ventilation</a>
+          <a href="learn-germicidal-uv.html">Germicidal UV</a>
+          <a href="learn-monitoring.html">Monitoring</a>
+          <a href="learn-readiness.html">Readiness</a>
+        </div>
+      </li>
+      <li class="has-dropdown">
+        <a href="tools.html" class="nav-trigger">Tools</a>
+        <div class="dropdown-panel" role="menu">
+          <a href="building-scorecard.html">Building Scorecard</a>
+          <a href="guv-deployment-engine.html">GUV Deployment Engine</a>
+          <a href="map.html">Surveillance Map</a>
+        </div>
+      </li>
+      <li><a href="shepherd.html">Shepherd</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── Body wrapper ── -->
+<div class="mf-body">
+
+  <!-- ── Hero ── -->
+  <header class="mf-hero">
+    <p class="mf-kicker">Ellis &middot; 2026</p>
+    <h1>Clean air is a <em>decision,</em> not an accident.</h1>
+    <p class="mf-lede">This is the new gateway to a safer place. Ellis turns the current science on ventilation, filtration, and germicidal UV into tools you can use today. No engineering degree required. No paywall. No jargon.</p>
+    <div class="mf-byline">
+      <span>Biosecurity Network</span>
+      <span>&middot;</span>
+      <span>Published continuously</span>
+    </div>
+  </header>
+
+  <!-- ── Section 1 ── -->
+  <section class="mf-section">
+    <p class="mf-sect-num">I &mdash; The gap</p>
+    <h2>What we know is not what we do.</h2>
+    <p>The engineering solutions for clean indoor air are mature. Higher-grade filters. Increased ventilation rates. Upper-room germicidal UV. Each is backed by decades of research and real-world deployment in hospitals, labs, and industrial settings.</p>
+    <p>But walk into a school, an office, a clinic, a community center — and you'll find air that hasn't been thought about since the blueprints were signed. The gap between what we know and what we do is not a science gap. It's an access gap.</p>
+    <p class="mf-footnote">The CDC recommends minimum ventilation rates of 5 air changes per hour in healthcare settings. The average classroom in the US achieves less than 3. <a href="learn-foundations.html">Read the foundations &rarr;</a></p>
+  </section>
+
+  <!-- ── Section 2 ── -->
+  <section class="mf-section">
+    <p class="mf-sect-num">II &mdash; The response</p>
+    <h2>We built the bridge.</h2>
+    <p>Three tools, designed to be used in sequence. The first tells you where you stand. The second tells you what to do about it. The third shows you what's happening around you. Together they turn a vague concern into a specific, actionable plan.</p>
+    <p class="mf-stat">8,204</p>
+    <p class="mf-stat-label">Assessments completed this week</p>
+    <p>That's 8,204 buildings — schools, offices, clinics — where someone decided to stop guessing and start measuring. The scorecard takes under 30 minutes. The deployment engine takes a room's dimensions and returns a fixture layout. The map updates every Monday.</p>
+  </section>
+
+  <!-- ── Section 3 ── -->
+  <section class="mf-section">
+    <p class="mf-sect-num">III &mdash; The threads</p>
+    <h2>Six sections. One body of work.</h2>
+    <p>Each thread is self-contained. Start wherever you are.</p>
+    <div style="margin-top:20px;">
+      <a href="tools.html" class="mf-link-item">
+        <span class="li-num">01</span>
+        <div class="li-content">
+          <p class="li-label">Tools</p>
+          <p class="li-title">Score, plan, monitor</p>
+        </div>
+        <span class="li-arrow">&rarr;</span>
+      </a>
+      <a href="learn.html" class="mf-link-item">
+        <span class="li-num">02</span>
+        <div class="li-content">
+          <p class="li-label">Learn</p>
+          <p class="li-title">How this actually works</p>
+        </div>
+        <span class="li-arrow">&rarr;</span>
+      </a>
+      <a href="shepherd.html" class="mf-link-item">
+        <span class="li-num">03</span>
+        <div class="li-content">
+          <p class="li-label">Shepherd</p>
+          <p class="li-title">The weekly dispatch</p>
+        </div>
+        <span class="li-arrow">&rarr;</span>
+      </a>
+      <a href="map.html" class="mf-link-item">
+        <span class="li-num">04</span>
+        <div class="li-content">
+          <p class="li-label">Map</p>
+          <p class="li-title">What's circulating, where</p>
+        </div>
+        <span class="li-arrow">&rarr;</span>
+      </a>
+      <a href="timeline.html" class="mf-link-item">
+        <span class="li-num">05</span>
+        <div class="li-content">
+          <p class="li-label">Timeline</p>
+          <p class="li-title">Then to now</p>
+        </div>
+        <span class="li-arrow">&rarr;</span>
+      </a>
+      <a href="act.html" class="mf-link-item">
+        <span class="li-num">06</span>
+        <div class="li-content">
+          <p class="li-label">Act</p>
+          <p class="li-title">Take action</p>
+        </div>
+        <span class="li-arrow">&rarr;</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ── End ── -->
+  <div class="mf-end">
+    <div class="mf-end-mark">
+      <svg viewBox="0 0 26 26" fill="none">
+        <path d="M10 8L18 13L10 18V8Z" fill="#F2F3F0"/>
+      </svg>
+    </div>
+    <p>The most expensive air is the air you never thought about until someone got sick.</p>
+    <a href="building-scorecard.html" class="mf-end-btn">Score your building</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-row">
+          <img src="assets/flag-logo.png" alt="" width="30" height="30">
+          <span class="footer-brand-text">
+            <span class="footer-brand-line1">ellis</span>
+            <span class="footer-brand-line2">biosecurity network</span>
+          </span>
+        </div>
+        <p class="footer-tag">Indoor air defense and pandemic preparedness, made actionable. Not a substitute for a licensed HVAC engineer or industrial hygienist.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <ul>
+          <li><a href="building-scorecard.html">Building Scorecard</a></li>
+          <li><a href="guv-deployment-engine.html">GUV Deployment Engine</a></li>
+          <li><a href="map.html">Surveillance Map</a></li>
+          <li><a href="#">Letter generator</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="learn.html">Overview</a></li>
+          <li><a href="learn-foundations.html">Foundations</a></li>
+          <li><a href="learn-filtration-ventilation.html">Filtration &amp; Ventilation</a></li>
+          <li><a href="learn-germicidal-uv.html">Germicidal UV</a></li>
+          <li><a href="learn-monitoring.html">Monitoring</a></li>
+          <li><a href="learn-readiness.html">Readiness</a></li>
+          <li><a href="timeline.html">The timeline</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Organization</h4>
+        <ul>
+          <li><a href="#">About &amp; sourcing</a></li>
+          <li><a href="shepherd.html">Shepherd</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="#">Partner with us</a></li>
+          <li><a href="#">Donate</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Ellis</span>
+      <span>v0.1 prototype</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
